@@ -30,7 +30,7 @@
       "Coding",
       "OpenSource",
       "Social",
-      "Entertainment",
+      "Shopping",
       "DataBase",
     ];
     tabContent = {
