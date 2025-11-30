@@ -142,6 +142,11 @@
           url: "https://meesho.com",
           icon: "https://upload.wikimedia.org/wikipedia/commons/3/33/Meesho_logo.png",
         },
+         {
+          name: "Blinkit",
+          url: "https://blinkit.com",
+          icon: "https://cdn.brandfetch.io/idqFC5Rk0D/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1700856649486",
+        },
 
       ],
       DataBase: [
