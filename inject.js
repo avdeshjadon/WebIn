@@ -32,6 +32,7 @@
       "Social",
       "Shopping",
       "DataBase",
+      "Model Hubs",
     ];
     tabContent = {
       "AI Tools": [
@@ -159,6 +160,18 @@
           name: "Cloudinary",
           url: "https://console.cloudinary.com/app/c-e71e8fe00683ff6a2fba091e038d10/home/dashboard",
           icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAk1BMVEX///80SMUjO8IyRsUqQMOJk9r5+f0aNsGts+Pg4/a3vuovRMQrQcOdpuL9/f9BVcrl6PjGy+0OL8BPYMyDjtqhqeJve9Px8vtjctLZ3PM7Tsa+xOuSnN9+itrAxuvt7/p2gtYAKL/O0/E4Tslcac1RYc1JWsupsOWzuunR1vJodtKepd9hcdIAH71HWMqWn94AD7z7DXZFAAAMDklEQVR4nO1daXeyPBAtSQQ1URH3Feuu9a3P//91Lyq2TDZA2XpO7peeoynkmstkMjMJHx8GBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBoXC9t3TaRagfkdztjydRmV3Kjs0lrXzdrvfWwHQHdSa7r/Hw1qzW3bf3oXfqF+3noMIpfgB647gL8aUEeR41mLg+mX380W0u4czCshZWmCG8Pir2yi7t+nh988dFMPuSZKi6e68LrvHaeD7V+YRihPxe7J0div3jxgf+zjuoDTsniQJXf0JtTbPlL3A78Gxc27aZRPQw3bHTip18hypM21V2bR2a5S9Tu9Jsjcrm4cKbn9K3hi/H9Bp3y2biwz2FWfCz7rNkd6leo/jZOFkxO8OtFq2y6YE0e1oZ/ebj8YIIQg5zt0zJYz++HBSENoqm1MUo5Wn6S1mxOqMh8PrfN48TibHZoDa8LLdU51XgBGrjsVZbpGaHUK7/nG2FtyVkXtqfl16jnrypN+HMthIcNzIpwiMmeP06w1fbTV8f72wHKLQK2aVMKr2QGFCmTVdJXKnJ9deR34NjHqTvPsfC3tlSTvH0PnYTWoOG+sak3Nku1Ou3Y+H3Zc52cGENk63rrXd1daRiZXtyx3FSU9mY9hLz0+j2ZlKKFK8zL7fieH2JDYGk3P9tcudBkR2Pe9Q2uTvjonYH7RZvryQDZYmnug5YFrWrDHpiQRZ58Xxe8Idiw829soRqi1KNLDub5u+xte3MIwYl2JuDoKRwWyRRRRiJi5S6L6ESeMgdINtjtlc2l9shGvvCh/F2bfwO4+ze1oGghvBegWvGNcW97BgtMowFthuCYsV1C+UYmPPE2SrbO/QnQp3KHTOqPFWhmX+Cy95Bwd/F7hebHGPCXZW2Uuo+8lRpLiwOKPNKQhbuUQcBKGSRVHu2xxqFG8G+dyZFyq2MpqO4uDu4I3JJa87dTmLSneF5G58zlujOL/b8g88Ged2qwiOTnEmrj3gvBuvgMDNGt4z72lqAdcvbJjzvG+7a26uR/187+jD0AamORob258NahYXu8e7vGXThBTZOa+n3q8tthbl1xPYyz39bq/g3ERyWQ2PJv1HpsHiCFoFuMPuFjwXeJP9LRqDoSePvdNtEfPTDBpvp5nx9e1DT5nYRYOMbybHGNyfnjPVzehKkTILRlmWt1LDB95btub0tNXUjeB9UcuZA3gSWYZr7UVHV3hACnkKb2j04CBmNEPZa33hT/5T4S9gXA9dM7mou6L6sjSSzX0SwQa2AGfy/Mtiz3AInYIWa3e0gHvqZbDYl0Xsf8lRghBavH+X5HCBTMn7zvBppzAxGDPkbIa1Q/1YaH2vf452KLDibxZRT/ZSgsHYkd7w2HVHxdfzHGHZRmd/6ddf94nn0toRijrnfmlVdfYYeqeYBmLCw9kr9tw+OBJ+mJwPifPyeWAhS54yp/N1Sv2rLyU1A2/lPbPBWva733q236b0jk+iG4pR7828ZxZQ1c1hiugxxTi6O2Gep+xahcKdsdoBwc6umZSjveLnQUy+q1FGP1CWlt1GgfQTJhivvNqxtahIVXJDxzAYiM9WkjmsyRcL0umxKnWeo3PM9g2yiBfbms8us011dibZNY0j+aBoxWb7L9w16KVKezyW8gq6qFTRQK9U/hK4V5FH8IHJPrbOGlvaRCZvR/FndSR6g9/79AI4DiK30KZiFHXxzQuXFpwmJGgPi1wpfviTZqs2HKv2jaGhUniuBwnihP0e9R1WTFQxCnv9NfSkNalImbzpQ9cWtZJNE3afYkwKHcUQo9MVI4laUV9uH7swpZw0Fmrfox2YFD+Kdwy2TKyCo9LOcLNN0rznqI90V80fo+ZOCChhJgv8+3sYkkyW97xJNPyPUoR6w2TB12wENkSiU+jXJky12pGAXGlCDVwxIejCtqIRAVHlhOnyp0S18i8Ck51QozXnKcIVNEtU8vAr0bKF+jFa8blpof4dhM0xTjKEthAzLlGoQl0K5RKpI5BnZZcE/iiUaOlCFepSuERqM5rjxZ0EMwUv0dKFytelcIlUKNJefLW2KNGEQu3+U/uN78GHFfAwkTpaRc1tgqSSTKKJhLqcYrXf+CZOcJcnqEtxwXSPYpUml2gCod4LKnOrZ55BxzNal9KIzhXYiruSSqKxQg2LYjULnPcAE6nRupRj9BsWlzZTSzS8skqoP/WieQkVJlKj5hTkBJyYiJVOos9RlAo1UvObl1Cv0Pdc/XwxBXOFfrrXS/RJUTKKoG47J6H6IGKPd89JwfbAx9p7x0k0vIgoVK6kOSehDoA5/dESMDR0rGM4WiESQDuK9Lbx3uFyOUJZej5ChXUp5Br638DQEMErj8I+zgPUdHE9erne2sAFprC1IC+hQt9lGj5xzeinKEkiba4JPyOJzydsD3lQzGEU4cSHJQyxlcQp1QXYkRhCECQatowVaj39br8OcF5mxTCUSPQ5ilqhtluf6ffjgzQj/i6EoVSiT4qaUWwPLMx6aZOza5l/Fi04yp6hQqJhY41Q74taMk5J0QVLYe/x4TxPhkqJhq1VQn1uQSQphWoDK+g0cmeokeiTonQU2z/bSFMKFfYtdEFzZKiVaNheKtRI3CWlUMGMGHbmmhvDGImG/yAKFe6STSfUY7RvZH7/DJgfmqAUPiHD9ixOok+K3Ci2uZ3OqYQK8rwhQ+AH6L22VAz9rfc4rVQD4gT4j9uhyYcGUwl1JmHoRxkm2dGbVKWN25lQ9a1mIMncbQQA/Zds5E4j1NNeZPiRYvWUiuGjw7rGkuU2L9EHkgtVyrCTYgWcmqG2sSM6noJEw74mFepyGv2vkCGIeDvxesiRoUyiYWcTChU8h8/ORKeL+EhUngzlEg07lkyozehwPTtThyHvEhkqJPpAMqECMs/YrwsWVXHBtvwYqiUaUkwgVBsGDsPr+6Ao7vl0Fs5QJ9EHEggVcvGeUx/w5WjsRtScGGol+kC8UF0QFf58fryG80WcTHNhGCfRkGKcUNfQfXl+7IP5gtRi3Jo8GNqxEg07HXMUzwUw+U2j9aO9wCxGCnkwdOmtLk9/zCu6Ve790y4NfBDL9X4HnCs2ialUyG+28DsaiihBKaHSonBZm5hqk/wYujqGEhePB1eQEN1tymVt9JvDqssQFCTAndgu+ApPtfv6K8tQlXuS9INp9/hWliE8d4UrSOA2IqDVH2TI7TXgChL47QyOpqaiogzbW1DBhyn3fZM/WUftPFSTYXsOSxTFjcobOIh0oXQeqsmQc2upGI5Zcvvy0FhFsYoMebcWE9H3aV+FRLTCoFaQobDyYkNJ513uhCRMFZHFCjIUVl6etI57zZUgYIVQK8dw1OJddqQ4BnDBl5KglWw7WNUYLsd8oTedKqK+DeFsYDKVzIvVYmgfhIP98VSZXzr1+Dtg5yo8slVi6N/OCBL6oAk1zTzhwkg4w7c6DBsDcUNJIDxtHctcXGYLp85VhmFg/SWZLRITkWuJhzzzUfDKMGzIglex8TixNq/CDCUHLSSIqQr1lX+KYaIEDl8j+4cYYrRKuKEJbhL6MwxjdjpHezWPvoUhHUPSStEYcfGgtxhiGrdbPYpJZL0sZhTrmkJhUoNt29pSTa7W09cdnCDmbmGtJd2nOsHD/T0LS2TY1PSDnrliDt3PwYct4d4W/ucQHMgoQ4zTHsHiDr1wSSwynGneKIY7XGhaOGwj+nPwixfxnRKRxsKZkL8MqbN54U1tp82DiMjQ1okJfXGNL+rGwjGPXU2RkfDb/TDEaPvaGY7r6/3VNpLMflN+plHYEW7lMtfJlEtWtnUyZWNuEfBgiBFLNkdIcH+1DZbVLvBvf4iCrLirbDSNGWd617osIt84YIgDfc7eegute+nIjtfzdRQd7rSCpe4deXxjXSYYe1CnDQ91zm+fSduYbWX1J0tLLSdswZP22wMdRaGxjiJMqEw6X+Jb+V6AL40I+GMknp3802sop/byP6J8o6PQuPWpbkzBeSR2vkd02fPLN0UK8OWG7XlP07ieovG/Il8bNFof6yoI1ruhbnwQ3TFN4/JfGGhgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGDwd/E/Bq3M20qAmfEAAAAASUVORK5CYII=",
+        },
+      ],
+      "Model Hubs": [
+        {
+          name: "CivitAI",
+          url: "https://civitai.com",
+          icon: "https://civitai.com/favicon.ico",
+        },
+        {
+          name: "Hugging Face",
+          url: "https://huggingface.co",
+          icon: "https://huggingface.co/front/assets/huggingface_logo-noborder.svg",
         },
       ],
     };
