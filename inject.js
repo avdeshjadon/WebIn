@@ -27,6 +27,7 @@
   const initializeDefaultState = () => {
     tabs = [
       "AI Tools",
+      "LLM",
       "Coding",
       "OpenSource",
       "Social",
@@ -55,6 +56,13 @@
           name: "Grok",
           url: "https://www.grok.com",
           icon: "https://www.grok.com/favicon.ico",
+        },
+      ],
+      LLM: [
+        {
+          name: "Ollama",
+          url: "https://ollama.com",
+          icon: "https://ollama.com/favicon.ico",
         },
       ],
       Coding: [
