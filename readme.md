@@ -224,38 +224,6 @@ Share your ideas by opening an issue tagged with `enhancement`.
 ### Known Issues
 - None currently reported
 
-### Upcoming Features
-- [ ] Import/Export configuration
-- [ ] Dark mode toggle
-- [ ] Custom themes
-- [ ] Cloud sync option
-- [ ] Browser sync across devices
-- [ ] Extension shortcut customization in UI
-- [ ] Remember window position and size
-- [ ] App usage statistics
-- [ ] Folder/nested categories
-
----
-
-## ❓ FAQ
-
-**Q: Will this work on Firefox or Edge?**  
-A: Currently optimized for Chrome. Firefox and Edge support may be added in future versions.
-
-**Q: Does WebIn collect any data?**  
-A: No. All data is stored locally on your device using `chrome.storage.local`. Nothing is sent to external servers.
-
-**Q: Can I use my own icons?**  
-A: Yes! When adding or editing an app, paste any image URL in the "Icon URL" field.
-
-**Q: Why aren't some favicons loading?**  
-A: Some websites don't provide favicons or block external access. Use custom icon URLs for best results.
-
-**Q: How do I backup my configuration?**  
-A: Currently manual backup isn't supported, but it's on the roadmap. For now, your data persists in Chrome's local storage.
-
----
-
 ## 📜 License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full details.
@@ -288,7 +256,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 - 🐙 GitHub: [@avdeshjadon](https://github.com/avdeshjadon)
 - 💼 LinkedIn: [Avdesh Jadon](https://linkedin.com/in/avdeshjadon)
-- 📧 Email: avdeshjadon.dev@gmail.com
+- 📧 Email: theavdeshjadon@gmail.com
 
 ---
 
