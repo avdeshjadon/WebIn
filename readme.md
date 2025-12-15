@@ -1,183 +1,320 @@
-# WebIn: Your Ultimate New Tab Dashboard 🚀
+# WebIn - Quick Access Browser Extension 🚀
 
 ![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)
-![Repo Size](https://img.shields.io/github/repo-size/avdeshjadon-dev/WebIn)
-![Last Commit](https://img.shields.io/github/last-commit/avdeshjadon-dev/WebIn)
-![1.0.0](https://img.shields.io/badge/version-1.0.0-green)
+![Version](https://img.shields.io/badge/version-1.0.0-green)
+![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome)
 
-**WebIn** is a powerful, lightweight browser extension that transforms your new tab into a sleek, organized, and fully customizable dashboard. It's designed for productivity, allowing you to access all your favorite websites and tools from a single, beautiful interface without the clutter of traditional bookmarks.
-
----
-
-## 🎹 Keyboard Shortcut to Activate WebIn
-
-* On **macOS**, press:  
-  `Cmd` + `Shift` + `Y`
-
-* On **Windows/Linux**, press:  
-  `Alt` + `Shift` + `Y`
-
-You can customize or change this shortcut anytime after installation by going to:  
-`chrome://extensions/shortcuts`  
-and editing the WebIn extension shortcut to your preferred key combination.
+**WebIn** is a powerful, lightweight browser extension that provides instant access to your favorite websites and tools through a sleek, draggable overlay. Designed for productivity enthusiasts, it offers a beautiful, customizable dashboard that appears on demand with just a keyboard shortcut.
 
 ---
 
-## 🎥 Live View
+## � Features
 
-![WebIn Live Demo](https://i.imgur.com/JGO7lsw.png)
+### Core Functionality
+* **🎹 Quick Activation**: Launch with `Cmd+Shift+Y` (Mac) or `Ctrl+Shift+Y` (Windows/Linux)
+* **📁 Smart Categories**: Organize links into custom tabs (AI Tools, Coding, Social, etc.)
+* **🔍 Universal Search**: Instantly search across all your apps with real-time filtering
+* **✨ High-Quality Icons**: All app icons are loaded in HD quality for a crisp, professional look
+* **🎨 Beautiful UI**: Modern, glass-morphism design that works on any website
 
----
+### Customization
+* **➕ Add Categories**: Create unlimited custom categories for your workflow
+* **✏️ Edit Apps**: Modify app names, URLs, and icons
+* **🗑️ Delete Mode**: Easy category and app management
+* **🔄 Reset Option**: Restore default settings with one click
 
-## ✨ Key Features
-
-* **Smart Categorization:** Group your links into custom tabs like "Coding," "Social," "AI Tools," or anything you need for your workflow.
-* **Dynamic Grid Layout:** A clean, modern grid displays your apps with their favicons for quick visual recognition.
-* **Complete Customization:**
-    * **Add/Delete Categories:** Tailor the navigation tabs to match your projects and interests.
-    * **Add/Edit/Delete Apps:** Easily manage the links within each category on the fly.
-* **Blazing-Fast Universal Search:** Instantly find any app across all categories with a powerful, real-time search bar.
-* **Draggable & Resizable UI:** Reposition and resize the hub window to fit your screen and workflow perfectly. It remembers its state.
-* **Persistent Local Storage:** Your entire custom layout is securely saved locally using the `chrome.storage.local` API.
-* **Conflict-Free & Secure:** Built with a **Shadow DOM** to ensure the extension's styles and scripts never conflict with any website you visit.
-* **Lightweight & Performant:** Optimized for speed with no external libraries or dependencies, ensuring a smooth experience.
-* **One-Click Reset:** Easily revert to the default configuration anytime.
-
----
-
-## 🛠️ Technology Stack
-
-* **Core:** `JavaScript (ES6+)`, `HTML5`, `CSS3`
-* **APIs:** `Chrome Extension APIs` (Manifest V3)
-    * `chrome.storage` for data persistence.
-    * `chrome.runtime` for communication between scripts.
-    * `chrome.action` for toolbar functionality.
+### User Experience  
+* **📱 Draggable & Resizable**: Position and size the overlay to your preference
+* **💾 Auto-Save**: All changes persist automatically to local storage
+* **🔒 Shadow DOM**: Zero conflicts with website styles
+* **⚡ Lightweight**: No external dependencies, blazing-fast performance
 
 ---
 
-## 📁 Folder Structure
+## �️ Screenshot
 
-The repository is organized to be clean and maintainable, following standard practices for browser extension development.
+![WebIn Demo](https://i.imgur.com/JGO7lsw.png)
+
+---
+
+## ⚡ Quick Start
+
+### Installation
+
+1. **Download** or clone this repository:
+   ```bash
+   git clone https://github.com/avdeshjadon/WebIn.git
+   ```
+
+2. **Open Chrome** and navigate to `chrome://extensions/`
+
+3. **Enable Developer Mode** (toggle in top-right corner)
+
+4. **Click "Load unpacked"** and select the `WebIn` folder
+
+5. **Done!** The WebIn icon will appear in your toolbar
+
+### Keyboard Shortcut
+
+- **macOS**: `Cmd + Shift + Y`
+- **Windows/Linux**: `Ctrl + Shift + Y`
+
+To customize the shortcut, visit `chrome://extensions/shortcuts` and modify the WebIn binding.
+
+---
+
+## �️ Technology Stack
+
+- **JavaScript (ES6+)** - Core logic and UI rendering
+- **HTML5 & CSS3** - Shadow DOM styling
+- **Chrome Extension API (Manifest V3)**
+  - `chrome.storage` - Data persistence
+  - `chrome.runtime` - Background messaging
+  - `chrome.scripting` - Content injection
+
+---
+
+## 📂 Project Structure
+
 ```
 WebIn/
-├── images/
+├── images/              # Extension icons (16x16 to 96x96)
 │   ├── icon-16.png
 │   ├── icon-32.png
 │   ├── icon-48.png
 │   └── icon-96.png
-├── .gitignore
-├── background.js
-├── inject.js
-└── manifest.json
-└── readme.md
-
+├── background.js        # Service worker for icon fetching
+├── inject.js            # Main UI logic and state management
+├── manifest.json        # Extension configuration
+├── LICENSE              # MIT License
+└── README.md            # Documentation
 ```
-| File / Folder   | Description                                                                                                                              |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `images/`       | Contains all the static icons used for the extension's branding in the browser toolbar and extensions menu.                                |
-| `.gitignore`    | Specifies which files and directories should be ignored by Git (e.g., `node_modules`, system files).                                       |
-| `background.js` | The service worker for the extension. It runs in the background to handle events and long-running tasks, like fetching favicons.           |
-| `inject.js`     | The main content script. This file contains all the logic for creating, managing, and displaying the WebIn user interface on the page.     |
-| `manifest.json` | The core configuration file for the Chrome extension. It defines permissions, scripts, icons, and other essential metadata.                |
-| `readme.md`     | You are here! This file.                                                                                                                   |
+
+### File Descriptions
+
+| File | Purpose |
+|------|---------|
+| `manifest.json` | Extension configuration, permissions, and metadata |
+| `background.js` | Handles background tasks like fetching favicons |
+| `inject.js` | Contains all UI logic, state management, and event handlers |
+| `images/` | Extension icons for browser toolbar and menu |
 
 ---
 
-## 🚀 Getting Started
+## 🎨 Default Categories
 
-You can get WebIn up and running in two ways: by cloning the repository (for developers) or by loading the unpacked extension (for users).
+WebIn comes pre-configured with popular tools across multiple categories:
 
-### 1. For Developers (Cloning the Repo)
+- **AI Tools**: ChatGPT, DeepSeek, Gemini, Grok
+- **LLM**: Ollama
+- **Coding**: LeetCode
+- **OpenSource**: GitHub, Stack Overflow, SourceForge
+- **Social**: YouTube, LinkedIn, WhatsApp, Facebook, Instagram, Twitter, Reddit
+- **Shopping**: Amazon, Flipkart, Myntra, Meesho, Blinkit
+- **Database**: Firebase, Cloudinary
+- **Model Hubs**: CivitAI, Hugging Face
 
-This method is recommended if you want to contribute to the project or explore the code.
-
-1.  **Clone the repository:** Open your terminal and run the following command:
-    ```sh
-    git clone https://github.com/avdeshjadon-dev/WebIn.git
-    ```
-2.  **Navigate to the directory:**
-    ```sh
-    cd WebIn
-    ```
-3.  **Load the extension in Chrome:**
-    * Open Google Chrome and navigate to `chrome://extensions`.
-    * Enable **"Developer mode"** using the toggle in the top-right corner.
-    * Click the **"Load unpacked"** button.
-    * Select the `WebIn` folder that you just cloned.
-
-### 2. For General Users (Recommended)
-
-This is the simplest way to install and use the extension.
-
-1.  **Download the ZIP file:** Go to the [Releases page](https://github.com/avdeshjadon/WebIn/releases) of this repository and download the latest `.zip` file.
-2.  **Unzip the file:** Extract the contents of the ZIP file into a permanent folder on your computer.
-3.  **Load the extension in Chrome:**
-    * Open Google Chrome and navigate to `chrome://extensions`.
-    * Enable **"Developer mode"** using the toggle in the top-right corner.
-    * Click the **"Load unpacked"** button.
-    * Select the folder where you extracted the files.
-
-The WebIn icon will now appear in your browser's toolbar. You're all set!
+All categories and apps are fully customizable!
 
 ---
 
-## ⚙️ Architectural Overview
+## 💡 Usage Guide
 
-WebIn is built with a clear separation of concerns to ensure it is robust and easy to maintain.
+### Adding a New Category
+1. Click the **+** button in the search bar
+2. Enter a category name
+3. Click "Add" to create
 
-### 1. `manifest.json`
-This is the heart of the extension. It uses Manifest V3 and defines:
-* **`permissions`**: Requests access to `storage` (to save user data) and `scripting` (to inject the UI).
-* **`background`**: Registers `background.js` as the service worker.
-* **`action`**: Defines the toolbar icon and enables the extension to be triggered by a user click.
-* **`host_permissions`**: Although not strictly necessary for this logic to run on an active tab click, it's good practice for future features.
+### Adding an App
+1. Navigate to your desired category
+2. Click the **+** card at the end of the grid
+3. Fill in app name, URL, and optional icon URL
+4. Click "Add App"
 
-### 2. `background.js` (Service Worker)
-The background script is an event-based service worker. Its primary responsibility is to handle tasks that don't require a visible UI.
-* **Icon Fetching:** It listens for messages from `inject.js` requesting a favicon. To avoid CORS issues and get a clean, usable image, it fetches the icon URL and converts it to a `base64` data URL, which is then sent back to the content script.
+### Editing an App
+1. Hover over any app card
+2. Click the **⋮** menu button
+3. Modify details and click "Save"
 
-### 3. `inject.js` (UI & Core Logic)
-This is the largest and most critical file. It's injected into the active tab when the user clicks the extension icon. The entire script is wrapped in an **IIFE (Immediately Invoked Function Expression)** to prevent any variable leakage into the global scope of the web page.
+### Deleting Items
+- **Categories**: Click the trash icon, then click the category to delete
+- **Apps**: Click the **⋮** menu on the app card, then "Delete App"
 
-* **State Management:**
-    * Two variables, `tabs` and `tabContent`, hold the entire state of the application.
-    * `saveState()` and `initializeApp()` functions handle the serialization/deserialization of this state to and from `chrome.storage.local`.
+### Searching
+Simply start typing in the search bar to filter apps across all categories in real-time.
 
-* **UI Construction (`buildUI`)**:
-    * **Shadow DOM:** The entire UI is rendered inside a Shadow DOM to guarantee that no CSS from the host page can affect the extension, and vice-versa. This is critical for consistent behavior across all websites.
-    * **Programmatic Element Creation:** Every single UI element is created and configured dynamically using JavaScript. This provides full control over the structure and behavior of the application without needing a separate HTML file.
+---
 
-* **Event Handling:**
-    * **Drag & Resize:** Listeners are attached to the header and resizer handle to allow the user to move and resize the main window. The position and size are not currently saved but could be a future enhancement.
-    * **User Actions:** All clicks on tabs, cards, search, and action buttons (`Add`, `Delete`, `Reset`) are handled with dedicated event listeners that update the state and re-render the UI as needed.
+## 🔧 Advanced Configuration
 
-* **Modals:** A flexible `showModal()` system is used to generate different types of dialogs (confirm, prompt, edit forms) dynamically, improving code reuse and user experience.
+### Custom Icons
+When adding or editing an app, you can provide a custom icon URL. If no icon is provided, WebIn automatically fetches the favicon from the website. For best results, use high-quality PNG or SVG images (minimum 128x128px recommended).
+
+### Keyboard Navigation
+- Press `Enter` while searching to open the first result
+- Use `Esc` to close the overlay (click backdrop)
+
+### Resizing
+Drag the bottom-right corner of the WebIn window to resize it. The extension remembers your layout preferences.
+
+---
+
+## 🏗️ Architecture
+
+### Shadow DOM Implementation
+WebIn uses Shadow DOM to ensure complete style isolation. This prevents any CSS conflicts between the extension and host websites, guaranteeing consistent appearance everywhere.
+
+### State Management
+The extension maintains state through two main objects:
+- `tabs`: Array of category names
+- `tabContent`: Object mapping categories to their apps
+
+State is automatically synchronized with `chrome.storage.local` on every change.
+
+### Event-Driven Design
+All user interactions (clicks, drags, searches) are handled through event listeners attached to dynamically created DOM elements, ensuring memory efficiency and responsive UI.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you have an idea for a new feature or have found a bug, please feel free to contribute.
+Contributions are welcome! Here's how you can help:
 
-1.  **Fork the repository** by clicking the "Fork" button in the top-right.
-2.  **Clone your forked repository:** `git clone https://github.com/YourUsername/WebIn.git`
-3.  **Create a new branch:** `git checkout -b feature/YourAmazingFeature`
-4.  **Make your changes** and commit them with a descriptive message.
-5.  **Push to your branch:** `git push origin feature/YourAmazingFeature`
-6.  **Open a Pull Request** back to the main `avdeshjadon-dev/WebIn` repository.
+### Reporting Bugs
+Open an issue with:
+- Clear description of the bug
+- Steps to reproduce
+- Expected vs actual behavior
+- Browser version and OS
 
-If you find any issues, please [report them here](https://github.com/avdeshjadon/WebIn/issues).
+### Feature Requests
+Share your ideas by opening an issue tagged with `enhancement`.
+
+### Pull Requests
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit your changes: `git commit -m 'Add AmazingFeature'`
+4. Push to the branch: `git push origin feature/AmazingFeature`
+5. Open a Pull Request
+
+### Development Guidelines
+- Follow existing code style
+- Test on multiple websites before submitting
+- Keep functions small and focused
+- Comment complex logic
+- Update README if adding new features
+
+---
+
+## 📝 Changelog
+
+### Version 1.0.0 (Current)
+- ✨ Initial release
+- 🎨 HD icon support for all default apps
+- 🔍 Real-time search functionality
+- 📱 Draggable and resizable UI
+- 💾 Local storage persistence
+- 🎯 8 default categories with popular apps
+- 🔧 Full CRUD operations for categories and apps
+
+---
+
+## 🐛 Known Issues & Roadmap
+
+### Known Issues
+- None currently reported
+
+### Upcoming Features
+- [ ] Import/Export configuration
+- [ ] Dark mode toggle
+- [ ] Custom themes
+- [ ] Cloud sync option
+- [ ] Browser sync across devices
+- [ ] Extension shortcut customization in UI
+- [ ] Remember window position and size
+- [ ] App usage statistics
+- [ ] Folder/nested categories
+
+---
+
+## ❓ FAQ
+
+**Q: Will this work on Firefox or Edge?**  
+A: Currently optimized for Chrome. Firefox and Edge support may be added in future versions.
+
+**Q: Does WebIn collect any data?**  
+A: No. All data is stored locally on your device using `chrome.storage.local`. Nothing is sent to external servers.
+
+**Q: Can I use my own icons?**  
+A: Yes! When adding or editing an app, paste any image URL in the "Icon URL" field.
+
+**Q: Why aren't some favicons loading?**  
+A: Some websites don't provide favicons or block external access. Use custom icon URLs for best results.
+
+**Q: How do I backup my configuration?**  
+A: Currently manual backup isn't supported, but it's on the roadmap. For now, your data persists in Chrome's local storage.
 
 ---
 
 ## 📜 License
 
-This project is licensed under the [**MIT License**](https://opensource.org/licenses/MIT). See the [`LICENSE`](LICENSE) file for more details.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full details.
+
+```
+MIT License
+
+Copyright (c) 2025 Avdesh Jadon
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+```
 
 ---
 
-## 👤 Author
+## 👨‍💻 Author
 
-Crafted with ❤️ by **Avdesh Jadon**.
+**Avdesh Jadon**
 
-* **GitHub:** [@avdeshjadon](https://github.com/avdeshjadon)
+- 🐙 GitHub: [@avdeshjadon](https://github.com/avdeshjadon)
+- 💼 LinkedIn: [Avdesh Jadon](https://linkedin.com/in/avdeshjadon)
+- 📧 Email: avdeshjadon.dev@gmail.com
+
+---
+
+## ⭐ Support
+
+If you find WebIn useful, please consider:
+- ⭐ Starring the repository
+- 🐛 Reporting bugs and issues
+- 💡 Suggesting new features
+- 🤝 Contributing code
+- 📢 Sharing with others
+
+---
+
+## 🙏 Acknowledgments
+
+- Icon sources: Icons8, website favicons, and public CDNs
+- Inspiration: Modern productivity tools and launcher applications
+- Community: Thanks to all contributors and users
+
+---
+
+<div align="center">
+
+**Made with ☕ and ❤️ by Avdesh Jadon**
+
+[Report Bug](https://github.com/avdeshjadon/WebIn/issues) · [Request Feature](https://github.com/avdeshjadon/WebIn/issues) · [Documentation](https://github.com/avdeshjadon/WebIn/wiki)
+
+</div>

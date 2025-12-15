@@ -20,11 +20,16 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "images/perplexity.svg",
-        "images/deepseek.svg",
-        "images/grok.svg",
-        "images/exercism.svg",
-        "inject.js"
+        "js/config.js",
+        "js/state.js",
+        "js/styles.js",
+        "js/styles2.js",
+        "js/styles3.js",
+        "js/modals.js",
+        "js/ui.js",
+        "js/tabs.js",
+        "js/events.js",
+        "js/inject.js"
       ],
       "matches": ["<all_urls>"]
     }
