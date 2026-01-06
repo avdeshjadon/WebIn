@@ -1,21 +1,26 @@
-MIT License
+Copyright (c) 2024-2026. All Rights Reserved.
 
-Copyright (c) 2025 Avdesh Jadon
+PROPRIETARY SOFTWARE LICENSE
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software and associated documentation files (the "Software") are the 
+exclusive property of the copyright holder. 
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+NO PERMISSION IS GRANTED to any person or entity to:
+
+1. Use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+   copies of the Software
+2. Permit persons to whom the Software is furnished to do so
+3. Reverse engineer, decompile, or disassemble the Software
+4. Create derivative works based on the Software
+5. Use the Software for any commercial or non-commercial purpose without 
+   explicit written permission from the copyright holder
+
+UNAUTHORIZED USE, REPRODUCTION, OR DISTRIBUTION OF THIS SOFTWARE, OR ANY 
+PORTION OF IT, MAY RESULT IN SEVERE CIVIL AND CRIMINAL PENALTIES, AND WILL 
+BE PROSECUTED TO THE MAXIMUM EXTENT POSSIBLE UNDER LAW.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
+
+For licensing inquiries, contact the copyright holder.

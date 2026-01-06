@@ -20,6 +20,11 @@ const WEBIN_CONFIG = {
         url: "https://chat.openai.com",
       },
       {
+        name: "Claude",
+        url: "https://claude.ai",
+        icon: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/claude-ai-icon.png",
+      },
+      {
         name: "DeepSeek",
         url: "https://chat.deepseek.com/",
       },
@@ -29,7 +34,8 @@ const WEBIN_CONFIG = {
       },
       {
         name: "Grok",
-        url: "https://x.com/i/grok",
+        url: "https://grok.com",
+        icon: "https://img.icons8.com/?size=512&id=USGXKHXKl9X7&format=png",
       },
     ],
     LLM: [
@@ -114,10 +120,27 @@ const WEBIN_CONFIG = {
       {
         name: "Firebase",
         url: "https://console.firebase.google.com/u/0/",
+        icon: "https://vectorseek.com/wp-content/uploads/2025/05/Firebase-icon-Logo-PNG-SVG-Vector.png",
       },
       {
-        name: "Cloudinary",
-        url: "https://console.cloudinary.com",
+        name: "MongoDB",
+        url: "https://cloud.mongodb.com",
+        icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwRUQ2NCI+PHBhdGggZD0iTTEyIDEuMjdjLTIuMiA0LjQtMy4zIDYuNi0zLjMgMTAuNzMgMCA0LjEzIDEuMSA2LjMzIDMuMyAxMC43MyAyLjItNC40IDMuMy02LjYgMy4zLTEwLjczIDAtNC4xMy0xLjEtNi4zMy0zLjMtMTAuNzN6bS0uNSA0djE1aC0uMXYtMTVoLjF6Ii8+PC9zdmc+",
+      },
+      {
+        name: "Supabase",
+        url: "https://supabase.com/dashboard",
+        icon: "https://img.icons8.com/?size=512&id=grZaE9tjqDyr&format=png",
+      },
+      {
+        name: "PostgreSQL",
+        url: "https://www.postgresql.org",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1080px-Postgresql_elephant.svg.png",
+      },
+      {
+        name: "PlanetScale",
+        url: "https://planetscale.com",
+        icon: "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/2/planetscale-x0ysfb6g0dedpas15vtc7.png/planetscale-30oedqelebdxwjr0iw40qi.png",
       },
     ],
     "Model Hubs": [
