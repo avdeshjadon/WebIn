@@ -39,8 +39,26 @@ const WebInUI = {
     card.appendChild(p);
     card.appendChild(menuBtn);
 
+    // Get icon URL
     const iconUrl = WebInState.getFaviconUrl(item.url, item.icon);
-    img.src = iconUrl;
+    
+    // Try to load icon via background script to bypass CSP
+    WebInState.fetchIconViaBackground(iconUrl).then(dataUrl => {
+      if (dataUrl) {
+        img.src = dataUrl;
+      } else {
+        // Fallback: try direct load (works on sites without strict CSP)
+        img.src = iconUrl;
+        img.onerror = () => {
+          img.src = WEBIN_CONFIG.FALLBACK_ICON_SVG;
+        };
+      }
+    }).catch(() => {
+      img.src = iconUrl;
+      img.onerror = () => {
+        img.src = WEBIN_CONFIG.FALLBACK_ICON_SVG;
+      };
+    });
 
     return card;
   },

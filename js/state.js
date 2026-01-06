@@ -2,6 +2,7 @@ const WebInState = {
   tabs: null,
   tabContent: null,
   isDeleteMode: false,
+  iconCache: new Map(),
 
   saveState() {
     if (chrome && chrome.storage && chrome.storage.local) {
@@ -82,5 +83,27 @@ const WebInState = {
       return customIcon;
     }
     return `https://www.google.com/s2/favicons?sz=128&domain_url=${encodeURIComponent(url)}`;
+  },
+
+  // Fetch icon via background script to bypass CSP
+  async fetchIconViaBackground(url) {
+    if (this.iconCache.has(url)) {
+      return this.iconCache.get(url);
+    }
+
+    try {
+      const response = await chrome.runtime.sendMessage({
+        action: 'fetchIcon',
+        url: url
+      });
+      
+      if (response && response.dataUrl) {
+        this.iconCache.set(url, response.dataUrl);
+        return response.dataUrl;
+      }
+    } catch (error) {
+      console.error('WebIn: Failed to fetch icon via background', error);
+    }
+    return null;
   },
 };
