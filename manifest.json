@@ -1,12 +1,24 @@
 {
   "manifest_version": 3,
   "name": "WebIn",
-  "description": "A floating overlay for instant access to your favorite web applications.",
-  "version": "1.0.0",
-  "permissions": ["scripting", "tabs", "storage"],
-  "host_permissions": ["<all_urls>"],
+  "description": "A floating overlay for instant access to your favorite web applications with session management.",
+  "version": "2.0.0",
+  "permissions": [
+    "scripting",
+    "tabs",
+    "storage",
+    "cookies",
+    "webRequest",
+    "webNavigation",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "*://*/*"
+  ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "commands": {
     "launch_overlay": {
@@ -17,19 +29,31 @@
       "description": "Launch the WebIn Overlay"
     }
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://ums.lpu.in/lpuums/*",
+        "https://www.instagram.com/*",
+        "https://www.facebook.com/*",
+        "https://facebook.com/*"
+      ],
+      "js": ["session/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
   "web_accessible_resources": [
     {
       "resources": [
-        "js/config.js",
-        "js/state.js",
-        "js/styles.js",
-        "js/styles2.js",
-        "js/styles3.js",
-        "js/modals.js",
-        "js/ui.js",
-        "js/tabs.js",
-        "js/events.js",
-        "js/inject.js"
+        "webin/config.js",
+        "webin/state.js",
+        "webin/styles.js",
+        "webin/styles2.js",
+        "webin/styles3.js",
+        "webin/modals.js",
+        "webin/ui.js",
+        "webin/tabs.js",
+        "webin/events.js",
+        "webin/inject.js"
       ],
       "matches": ["<all_urls>"]
     }
@@ -48,5 +72,8 @@
       "96": "images/icon-96.png"
     },
     "default_title": "WebIn"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
   }
 }
