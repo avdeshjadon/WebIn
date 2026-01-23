@@ -1,26 +1,61 @@
-Copyright (c) 2024-2026. All Rights Reserved.
+WebIn - Proprietary Software License
+Copyright (c) 2024-2026 Avdesh Jadon. All Rights Reserved.
 
-PROPRIETARY SOFTWARE LICENSE
+================================================================================
+                            PROPRIETARY SOFTWARE LICENSE
+================================================================================
 
-This software and associated documentation files (the "Software") are the 
-exclusive property of the copyright holder. 
+This software, "WebIn" (the "Software"), including all source code, documentation,
+images, and associated files, is the exclusive intellectual property of 
+Avdesh Jadon (the "Author").
 
-NO PERMISSION IS GRANTED to any person or entity to:
+--------------------------------------------------------------------------------
+                              RESTRICTIONS
+--------------------------------------------------------------------------------
 
-1. Use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-   copies of the Software
-2. Permit persons to whom the Software is furnished to do so
-3. Reverse engineer, decompile, or disassemble the Software
-4. Create derivative works based on the Software
-5. Use the Software for any commercial or non-commercial purpose without 
-   explicit written permission from the copyright holder
+NO PERMISSION IS GRANTED to any individual, organization, or entity to:
+
+  1. COPY, reproduce, or duplicate the Software in any form
+  2. MODIFY, adapt, or create derivative works based on the Software
+  3. DISTRIBUTE, publish, or share the Software publicly or privately
+  4. SELL, sublicense, lease, or rent the Software
+  5. REVERSE ENGINEER, decompile, disassemble, or attempt to derive the 
+     source code of the Software
+  6. USE the Software for any commercial or non-commercial purpose without 
+     prior explicit written consent from the Author
+  7. REMOVE or alter any proprietary notices, labels, or marks on the Software
+
+--------------------------------------------------------------------------------
+                              LEGAL NOTICE
+--------------------------------------------------------------------------------
 
 UNAUTHORIZED USE, REPRODUCTION, OR DISTRIBUTION OF THIS SOFTWARE, OR ANY 
-PORTION OF IT, MAY RESULT IN SEVERE CIVIL AND CRIMINAL PENALTIES, AND WILL 
-BE PROSECUTED TO THE MAXIMUM EXTENT POSSIBLE UNDER LAW.
+PORTION THEREOF, CONSTITUTES A VIOLATION OF COPYRIGHT LAW AND MAY RESULT IN 
+SEVERE CIVIL AND CRIMINAL PENALTIES. VIOLATORS WILL BE PROSECUTED TO THE 
+MAXIMUM EXTENT PERMISSIBLE UNDER APPLICABLE LAW.
+
+--------------------------------------------------------------------------------
+                              DISCLAIMER
+--------------------------------------------------------------------------------
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, 
-DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-For licensing inquiries, contact the copyright holder.
+--------------------------------------------------------------------------------
+                              CONTACT
+--------------------------------------------------------------------------------
+
+For licensing inquiries, permissions, or any other questions:
+
+  Author:   Avdesh Jadon
+  Email:    theavdeshjadon@gmail.com
+  GitHub:   https://github.com/avdeshjadon
+  LinkedIn: https://linkedin.com/in/avdeshjadon
+
+================================================================================
+                    © 2024-2026 Avdesh Jadon. All Rights Reserved.
+================================================================================

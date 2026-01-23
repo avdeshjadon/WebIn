@@ -3,100 +3,110 @@
 ![Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)
 ![Version](https://img.shields.io/badge/version-2.0.0-green)
 ![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome)
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
 
-A lightweight browser extension for instant access to your favorite websites through a retro-styled overlay dashboard.
+**WebIn** is a sleek, retro-styled browser extension that gives you instant access to your favorite websites through a customizable overlay dashboard. No more cluttered bookmarks or endless tab searching.
 
-## Features
+## ✨ Features
 
-- **Quick Launch**: `Cmd+Shift+Y` (Mac) / `Ctrl+Shift+Y` (Windows/Linux)
-- **Smart Categories**: AI Tools, Databases, Social, Shopping, Coding & more
-- **Universal Search**: Real-time filtering across all apps
-- **Draggable & Resizable**: Position anywhere on screen
-- **Auto-Save**: Changes persist automatically
-- **Zero Conflicts**: Shadow DOM isolation
+| Feature | Description |
+|---------|-------------|
+| ⌨️ **Quick Launch** | `Cmd+Shift+Y` (Mac) / `Ctrl+Shift+Y` (Windows/Linux) |
+| 📁 **Custom Categories** | Organize apps into your own categories |
+| 🔍 **Universal Search** | Real-time filtering across all apps |
+| 🖱️ **Drag & Resize** | Position and resize the overlay anywhere |
+| 💾 **Auto-Save** | All changes persist automatically |
+| 🛡️ **Zero Conflicts** | Shadow DOM isolation prevents style clashes |
+| 🔄 **Cross-Device Sync** | Sync your apps across devices (optional) |
 
-## Default Apps
+## 🎯 Why WebIn?
 
-| Category | Apps |
-|----------|------|
-| AI Tools | ChatGPT, Claude, DeepSeek, Gemini, Grok |
-| LLM | Ollama |
-| Coding | LeetCode |
-| OpenSource | GitHub, Stack Overflow, SourceForge |
-| Social | YouTube, LinkedIn, WhatsApp, Facebook, Instagram, Twitter, Reddit |
-| Shopping | Amazon, Flipkart, Myntra, Meesho, Blinkit |
-| DataBase | Firebase, MongoDB, Supabase, PostgreSQL, PlanetScale |
-| Model Hubs | CivitAI, Hugging Face |
+- **Fast**: One keyboard shortcut to access everything
+- **Customizable**: Add, edit, delete apps and categories
+- **Lightweight**: Minimal footprint, no performance impact
+- **Privacy First**: Your data stays in your browser
+- **Beautiful UI**: Retro-styled design that stands out
 
-## Installation
+## 🚀 Installation
 
-1. Clone the repository
+1. **Clone** the repository
    ```bash
    git clone https://github.com/avdeshjadon/WebIn.git
    ```
 
-2. Open `chrome://extensions/` in Chrome
+2. Open **`chrome://extensions/`** in Chrome
 
-3. Enable **Developer Mode**
+3. Enable **Developer Mode** (top-right toggle)
 
-4. Click **Load unpacked** and select the WebIn folder
+4. Click **Load unpacked** → Select the `WebIn` folder
 
-## Usage
+5. Press `Cmd+Shift+Y` / `Ctrl+Shift+Y` to launch!
 
-- **Add Category**: Click + button in search bar
-- **Add App**: Click + card in any category
-- **Edit App**: Hover on card → click menu (⋮)
-- **Delete**: Use trash icon for categories, menu for apps
-- **Search**: Type to filter across all categories
-- **Resize**: Drag bottom-right corner
+## 📖 Usage
 
-## Tech Stack
+| Action | How To |
+|--------|--------|
+| **Open WebIn** | `Cmd+Shift+Y` / `Ctrl+Shift+Y` |
+| **Add Category** | Click `+` button in search bar |
+| **Add App** | Click `+` card in any category |
+| **Edit App** | Hover on card → Click menu (⋮) |
+| **Delete App** | Hover → Menu → Delete |
+| **Delete Category** | Click trash icon on category |
+| **Search** | Type to filter across all apps |
+| **Resize** | Drag bottom-right corner |
+| **Move** | Drag the header bar |
 
-- JavaScript (ES6+)
-- Chrome Extension Manifest V3
-- Shadow DOM for style isolation
-- chrome.storage for persistence
+## 🛠️ Tech Stack
 
-## Project Structure
+- **JavaScript** (ES6+ Modules)
+- **Chrome Extension** Manifest V3
+- **Shadow DOM** for style isolation
+- **Chrome Storage API** for persistence
+- **Firebase** (optional sync feature)
+
+## 📂 Project Structure
 
 ```
 WebIn/
-├── webin/
-│   ├── config.js      # Default tabs & apps
-│   ├── state.js       # State management
-│   ├── ui.js          # UI rendering
-│   ├── modals.js      # Modal dialogs
-│   ├── events.js      # Event handlers
-│   ├── tabs.js        # Tab management
-│   ├── styles.js      # CSS styles
-│   ├── styles2.js
-│   ├── styles3.js
-│   └── inject.js      # Main entry point
-├── session/           # Session sync module
-│   ├── content.js     # Content script entry
-│   ├── session-handler.js
-│   ├── firebase-init.js
-│   ├── firebase-firestore.js
-│   └── utils.js
-├── images/            # Extension icons
-├── background.js      # Service worker
-├── manifest.json      # Extension config
-└── LICENSE            # Proprietary license
+├── webin/                 # Core extension module
+│   ├── inject.js          # Main entry point
+│   ├── config.js          # Default configuration
+│   ├── state.js           # State management
+│   ├── ui.js              # UI rendering
+│   ├── modals.js          # Modal dialogs
+│   ├── events.js          # Event handlers
+│   ├── tabs.js            # Tab/category management
+│   └── styles[1-3].js     # CSS-in-JS styles
+├── session/               # Optional sync module
+├── images/                # Extension icons
+├── background.js          # Service worker
+├── manifest.json          # Extension manifest
+└── LICENSE                # Proprietary license
 ```
 
-## License
+## ⚠️ License
 
-**All Rights Reserved** - This software is proprietary. No permission is granted to use, copy, modify, or distribute without explicit written consent from the copyright holder.
+**PROPRIETARY SOFTWARE** - All Rights Reserved.
 
-See [LICENSE](LICENSE) for details.
+This software is the exclusive property of [Avdesh Jadon](https://github.com/avdeshjadon). No permission is granted to use, copy, modify, or distribute without explicit written consent.
 
-## Author
+See [LICENSE](LICENSE) for full details.
 
-**Avdesh Jadon**
-- GitHub: [@avdeshjadon](https://github.com/avdeshjadon)
-- LinkedIn: [Avdesh Jadon](https://linkedin.com/in/avdeshjadon)
-- Email: theavdeshjadon@gmail.com
+## 👨‍💻 Author
+
+<table>
+  <tr>
+    <td align="center">
+      <strong>Avdesh Jadon</strong><br>
+      <a href="https://github.com/avdeshjadon">GitHub</a> •
+      <a href="https://linkedin.com/in/avdeshjadon">LinkedIn</a> •
+      <a href="mailto:theavdeshjadon@gmail.com">Email</a>
+    </td>
+  </tr>
+</table>
 
 ---
 
-© 2024-2026 Avdesh Jadon. All Rights Reserved.
+<p align="center">
+  <strong>© 2024-2026 Avdesh Jadon. All Rights Reserved.</strong>
+</p>
