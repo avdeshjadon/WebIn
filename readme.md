@@ -61,7 +61,7 @@ A lightweight browser extension for instant access to your favorite websites thr
 
 ```
 WebIn/
-├── js/
+├── webin/
 │   ├── config.js      # Default tabs & apps
 │   ├── state.js       # State management
 │   ├── ui.js          # UI rendering
@@ -72,6 +72,12 @@ WebIn/
 │   ├── styles2.js
 │   ├── styles3.js
 │   └── inject.js      # Main entry point
+├── session/           # Session sync module
+│   ├── content.js     # Content script entry
+│   ├── session-handler.js
+│   ├── firebase-init.js
+│   ├── firebase-firestore.js
+│   └── utils.js
 ├── images/            # Extension icons
 ├── background.js      # Service worker
 ├── manifest.json      # Extension config

@@ -1,0 +1,16 @@
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Windows
+Thumbs.db
+
+# Node
+node_modules/
+
+# Logs
+*.log
