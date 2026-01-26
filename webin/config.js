@@ -11,6 +11,7 @@ const WEBIN_CONFIG = {
     "Shopping",
     "DataBase",
     "Model Hubs",
+    "Whiteboard",
   ],
 
   DEFAULT_TAB_CONTENT: {
@@ -152,6 +153,13 @@ const WEBIN_CONFIG = {
         name: "Hugging Face",
         url: "https://huggingface.co",
       },
+    ],
+    "Whiteboard": [
+      {
+        name: "Excalidraw",
+        url: "https://excalidraw.com/",
+        icon: "https://excalidraw.com/favicon.ico"
+      }
     ],
   },
 };
