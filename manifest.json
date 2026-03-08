@@ -1,24 +1,12 @@
 {
   "manifest_version": 3,
   "name": "WebIn",
-  "description": "A floating overlay for instant access to your favorite web applications with session management.",
+  "description": "A floating overlay for instant access to your favorite web applications.",
   "version": "2.0.0",
-  "permissions": [
-    "scripting",
-    "tabs",
-    "storage",
-    "cookies",
-    "webRequest",
-    "webNavigation",
-    "activeTab"
-  ],
-  "host_permissions": [
-    "<all_urls>",
-    "*://*/*"
-  ],
+  "permissions": ["scripting", "tabs", "storage", "activeTab"],
+  "host_permissions": ["<all_urls>", "*://*/*"],
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "commands": {
     "launch_overlay": {
@@ -29,18 +17,6 @@
       "description": "Launch the WebIn Overlay"
     }
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://ums.lpu.in/lpuums/*",
-        "https://www.instagram.com/*",
-        "https://www.facebook.com/*",
-        "https://facebook.com/*"
-      ],
-      "js": ["session/content.js"],
-      "run_at": "document_idle"
-    }
-  ],
   "web_accessible_resources": [
     {
       "resources": [
