@@ -10,86 +10,38 @@
 // pull request, or reporting issues on GitHub. Contributions are welcome.
 // ----------------------------------------------------------------------------
 //
-// inject.js -- Content Script Entry Point
+// popup-inject.js -- Standalone Popup Window Entry Point
 // ===========================================================
-// Main entry point injected into web pages via chrome.scripting.executeScript.
-// Orchestrates the full WebIn overlay lifecycle:
-//   - Uses window.__webinInjected flag to prevent duplicate initialization.
-//   - Registers a chrome.runtime.onMessage listener for "webin_toggle"
-//     messages from the background service worker.
-//   - toggleOverlay() checks for existing DOM elements and either closes
-//     (with fade-out animation) or opens the overlay.
-//   - buildUI() constructs the full overlay inside a Shadow DOM host:
-//     header, search bar, navigation tabs, content grid, footer, resizer.
-//   - Stops keyboard events from propagating to the host page to prevent
-//     interference with the page's own input handlers.
+// Alternative entry point used when WebIn is launched on restricted pages
+// (chrome://, edge://, about:, etc.) where content script injection is
+// not allowed. Loaded by popup.html in a standalone browser popup window.
 //
-// On first injection, automatically opens the overlay.
-// On subsequent shortcut presses, toggles via message without re-injection.
+// Differences from inject.js:
+//   - No backdrop overlay or drag-to-move (fills the entire popup window).
+//   - No resizer handle (window is resized via native browser controls).
+//   - Close button calls window.close() instead of removing DOM elements.
+//   - Wrapper uses full viewport dimensions (100vw × 100vh).
+//
+// Shares all other modules (config, state, styles, modals, ui, tabs, events)
+// with the content script version for a consistent user experience.
 // ----------------------------------------------------------------------------
 
 (() => {
-  // Prevent duplicate initialization if scripts are injected more than once
-  if (window.__webinInjected) {
-    toggleOverlay();
-    return;
-  }
-  window.__webinInjected = true;
-
-  // Listen for toggle messages from background.js
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "webin_toggle") {
-      toggleOverlay();
-      sendResponse({ ok: true });
-    }
-  });
-
-  function toggleOverlay() {
-    const existingHost = document.getElementById("webhub-shadow-host");
-    const existingBackdrop = document.querySelector(".webhub-backdrop");
-
-    if (existingHost) {
-      // Close the overlay with smooth animation
-      existingHost.style.transition = "opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)";
-      existingHost.style.opacity = "0";
-      existingHost.style.transform = "scale(0.97) translateZ(0)";
-      if (existingBackdrop) {
-        existingBackdrop.style.transition = "opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1)";
-        existingBackdrop.style.opacity = "0";
-      }
-      setTimeout(() => {
-        existingHost.remove();
-        if (existingBackdrop) existingBackdrop.remove();
-      }, 350);
-      return;
-    }
-
-    // Open the overlay
-    WebInState.loadState(() => {
-      buildUI();
-    });
-  }
-
-  // Open overlay on first injection
-  WebInState.loadState(() => {
-    buildUI();
-  });
-
-  function buildUI() {
+  const buildPopupUI = () => {
     WebInState.isDeleteMode = false;
 
-    const host = document.createElement("div");
-    host.id = "webhub-shadow-host";
-    host.style.cssText =
-      "position:fixed; z-index:999999; opacity:0; transform:scale(0.97) translateZ(0); will-change:transform,opacity; transition:opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);";
+    const shadow = document.body.attachShadow
+      ? (() => {
+          const host = document.createElement("div");
+          host.id = "webhub-shadow-host";
+          host.style.cssText = "width:100%;height:100%;";
+          document.body.appendChild(host);
+          const s = host.attachShadow({ mode: "open" });
+          return s;
+        })()
+      : null;
 
-    const backdrop = document.createElement("div");
-    backdrop.className = "webhub-backdrop";
-    backdrop.style.cssText =
-      "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); z-index:999998; opacity:0; transition:opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); will-change:opacity;";
-    document.body.appendChild(backdrop);
-
-    const shadow = host.attachShadow({ mode: "open" });
+    if (!shadow) return;
     WebInUI.shadow = shadow;
 
     const style = document.createElement("style");
@@ -97,11 +49,28 @@
       WEBIN_STYLES + WEBIN_STYLES_PART2 + WEBIN_STYLES_PART3;
     shadow.appendChild(style);
 
+    // Override wrapper styles for popup mode
+    const popupStyle = document.createElement("style");
+    popupStyle.textContent = `
+      .wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        min-height: unset !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+      .resizer { display: none !important; }
+    `;
+    shadow.appendChild(popupStyle);
+
     const wrapper = document.createElement("div");
     wrapper.className = "wrapper";
 
     const header = document.createElement("div");
     header.className = "header";
+    header.style.cursor = "default";
 
     const titleContainer = document.createElement("div");
     titleContainer.style.cssText =
@@ -153,15 +122,7 @@
     const closeBtn = document.createElement("button");
     closeBtn.className = "close";
     closeBtn.innerHTML = "×";
-    closeBtn.onclick = () => {
-      host.style.opacity = "0";
-      host.style.transform = "scale(0.95)";
-      backdrop.style.opacity = "0";
-      setTimeout(() => {
-        host.remove();
-        backdrop.remove();
-      }, 500);
-    };
+    closeBtn.onclick = () => window.close();
 
     headerActions.appendChild(resetBtn);
     headerActions.appendChild(closeBtn);
@@ -169,58 +130,7 @@
     header.appendChild(headerActions);
     wrapper.appendChild(header);
 
-    const searchContainer = createSearchBar();
-    wrapper.appendChild(searchContainer);
-
-    const nav = createNavigation();
-    wrapper.appendChild(nav);
-
-    const content = document.createElement("div");
-    WebInUI.content = content;
-
-    wrapper.appendChild(content);
-
-    const footer = document.createElement("div");
-    footer.className = "footer";
-    footer.textContent =
-      "Powered by caffeine and creativity — Avdesh Jadon ☕";
-    wrapper.appendChild(footer);
-
-    const resizerSE = document.createElement("div");
-    resizerSE.className = "resizer se";
-    resizerSE.dataset.direction = "se";
-    wrapper.appendChild(resizerSE);
-
-    shadow.appendChild(wrapper);
-    document.body.appendChild(host);
-
-    // Stop keyboard events from leaking to the page behind the overlay
-    ["keydown", "keyup", "keypress"].forEach((eventType) => {
-      host.addEventListener(eventType, (e) => {
-        e.stopPropagation();
-      }, true);
-    });
-
-    WebInUI.setActiveTab(
-      WebInState.tabs.length > 0 ? WebInState.tabs[0] : null
-    );
-
-    const positionHost = WebInEvents.setupDragAndResize(
-      host,
-      wrapper,
-      header
-    );
-    positionHost();
-
-    setTimeout(() => {
-      host.style.opacity = "1";
-      host.style.transform = "scale(1)";
-      backdrop.style.opacity = "1";
-      WebInUI.searchInput.focus();
-    }, 100);
-  }
-
-  function createSearchBar() {
+    // Search bar
     const searchContainer = document.createElement("div");
     searchContainer.className = "search-container";
 
@@ -258,13 +168,11 @@
 
     searchContainer.appendChild(addCategoryBtn);
     searchContainer.appendChild(deleteModeBtn);
+    wrapper.appendChild(searchContainer);
 
     WebInEvents.setupSearchEvents();
 
-    return searchContainer;
-  }
-
-  function createNavigation() {
+    // Navigation
     const nav = document.createElement("div");
     nav.className = "nav";
 
@@ -277,6 +185,33 @@
     );
 
     nav.appendChild(navTabsContainer);
-    return nav;
-  }
+    wrapper.appendChild(nav);
+
+    // Content
+    const content = document.createElement("div");
+    WebInUI.content = content;
+    wrapper.appendChild(content);
+
+    // Footer
+    const footer = document.createElement("div");
+    footer.className = "footer";
+    footer.textContent =
+      "Powered by caffeine and creativity — Avdesh Jadon ☕";
+    wrapper.appendChild(footer);
+
+    shadow.appendChild(wrapper);
+
+    WebInUI.setActiveTab(
+      WebInState.tabs.length > 0 ? WebInState.tabs[0] : null
+    );
+
+    setTimeout(() => {
+      WebInUI.searchInput.focus();
+    }, 100);
+  };
+
+  // Initialize
+  WebInState.loadState(() => {
+    buildPopupUI();
+  });
 })();

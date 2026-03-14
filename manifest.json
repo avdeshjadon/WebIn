@@ -29,7 +29,8 @@
         "webin/ui.js",
         "webin/tabs.js",
         "webin/events.js",
-        "webin/inject.js"
+        "webin/inject.js",
+        "webin/popup-inject.js"
       ],
       "matches": ["<all_urls>"]
     }

@@ -1,3 +1,31 @@
+// ----------------------------------------------------------------------------
+// WebIn -- Floating Overlay for Instant Access to Web Applications
+// ----------------------------------------------------------------------------
+// Author   : Avdesh Jadon
+// GitHub   : https://github.com/avdeshjadon
+// License  : MIT License -- free to use, modify, and distribute.
+//            See LICENSE file in the project root for full license text.
+// ----------------------------------------------------------------------------
+// If this project helped you, consider starring the repository, opening a
+// pull request, or reporting issues on GitHub. Contributions are welcome.
+// ----------------------------------------------------------------------------
+//
+// modals.js -- Modal Dialog System
+// ===========================================================
+// Provides a reusable modal dialog system for the WebIn overlay.
+// Supports three modal types:
+//   - alert   : Simple notification with an OK button.
+//   - confirm : Yes/No confirmation dialog with callback.
+//   - prompt  : Text input dialog with validation.
+//
+// Also provides specialized modals:
+//   - showAddAppModal  : Form to add a new app (name, URL, optional icon).
+//   - showEditAppModal : Form to edit or delete an existing app.
+//
+// All modals are rendered inside the Shadow DOM and include backdrop
+// click-to-close, Enter key submission, and auto-focus behavior.
+// ----------------------------------------------------------------------------
+
 const WebInModals = {
   showModal(shadow, config) {
     const {

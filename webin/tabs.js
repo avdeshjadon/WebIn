@@ -1,3 +1,30 @@
+// ----------------------------------------------------------------------------
+// WebIn -- Floating Overlay for Instant Access to Web Applications
+// ----------------------------------------------------------------------------
+// Author   : Avdesh Jadon
+// GitHub   : https://github.com/avdeshjadon
+// License  : MIT License -- free to use, modify, and distribute.
+//            See LICENSE file in the project root for full license text.
+// ----------------------------------------------------------------------------
+// If this project helped you, consider starring the repository, opening a
+// pull request, or reporting issues on GitHub. Contributions are welcome.
+// ----------------------------------------------------------------------------
+//
+// tabs.js -- Tab and Category Management
+// ===========================================================
+// Handles all tab/category-related operations in the WebIn overlay:
+//   - setActiveTab()      : Switches the active category tab and re-renders
+//                           the content grid. Guards against delete mode.
+//   - createTabButton()   : Creates a DOM button for a category tab with
+//                           click handler for both normal and delete modes.
+//   - addCategory()       : Adds a new user-defined category, validates
+//                           for duplicates, saves state, and auto-scrolls.
+//   - toggleDeleteMode()  : Toggles the category deletion mode with visual
+//                           feedback (red styling, crosshair cursor).
+//
+// Binds setActiveTab and createTabButton to WebInUI for cross-module access.
+// ----------------------------------------------------------------------------
+
 const WebInTabs = {
   setActiveTab(tabName) {
     if (WebInState.isDeleteMode) return;

@@ -1,3 +1,33 @@
+// ----------------------------------------------------------------------------
+// WebIn -- Floating Overlay for Instant Access to Web Applications
+// ----------------------------------------------------------------------------
+// Author   : Avdesh Jadon
+// GitHub   : https://github.com/avdeshjadon
+// License  : MIT License -- free to use, modify, and distribute.
+//            See LICENSE file in the project root for full license text.
+// ----------------------------------------------------------------------------
+// If this project helped you, consider starring the repository, opening a
+// pull request, or reporting issues on GitHub. Contributions are welcome.
+// ----------------------------------------------------------------------------
+//
+// ui.js -- UI Rendering Engine
+// ===========================================================
+// Core UI module responsible for rendering the WebIn overlay content.
+// Manages the visual representation of app cards and search results.
+//
+// Key responsibilities:
+//   - createCard()          : Builds an app card with favicon, name, and
+//                             context menu. Loads icons via background script
+//                             to bypass CSP, with fallback to direct loading.
+//   - renderContent()       : Renders the grid of app cards for the active
+//                             tab category, including the "Add App" card.
+//   - renderSearchResults() : Searches across all categories and renders
+//                             grouped results with category headers.
+//
+// Also stores shared UI references (shadow, content, searchInput, etc.)
+// and SVG icon definitions used throughout the overlay.
+// ----------------------------------------------------------------------------
+
 const WebInUI = {
   currentTab: null,
   shadow: null,

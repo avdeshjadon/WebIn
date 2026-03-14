@@ -1,3 +1,30 @@
+// ----------------------------------------------------------------------------
+// WebIn -- Floating Overlay for Instant Access to Web Applications
+// ----------------------------------------------------------------------------
+// Author   : Avdesh Jadon
+// GitHub   : https://github.com/avdeshjadon
+// License  : MIT License -- free to use, modify, and distribute.
+//            See LICENSE file in the project root for full license text.
+// ----------------------------------------------------------------------------
+// If this project helped you, consider starring the repository, opening a
+// pull request, or reporting issues on GitHub. Contributions are welcome.
+// ----------------------------------------------------------------------------
+//
+// state.js -- Application State Manager
+// ===========================================================
+// Manages the persistent state of the WebIn extension using
+// chrome.storage.local. Handles saving, loading, and resetting of:
+//   - Tab categories (ordered list of category names).
+//   - Tab content (apps/links stored under each category).
+//   - Icon caching via background script to bypass CSP restrictions.
+//   - Favicon URL resolution with custom icon override support.
+//
+// State lifecycle:
+//   - On first load, initializes from WEBIN_CONFIG defaults.
+//   - On subsequent loads, restores from chrome.storage.local.
+//   - Validates stored data integrity and resets if corrupt.
+// ----------------------------------------------------------------------------
+
 const WebInState = {
   tabs: null,
   tabContent: null,

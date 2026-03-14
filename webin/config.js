@@ -1,3 +1,27 @@
+// ----------------------------------------------------------------------------
+// WebIn -- Floating Overlay for Instant Access to Web Applications
+// ----------------------------------------------------------------------------
+// Author   : Avdesh Jadon
+// GitHub   : https://github.com/avdeshjadon
+// License  : MIT License -- free to use, modify, and distribute.
+//            See LICENSE file in the project root for full license text.
+// ----------------------------------------------------------------------------
+// If this project helped you, consider starring the repository, opening a
+// pull request, or reporting issues on GitHub. Contributions are welcome.
+// ----------------------------------------------------------------------------
+//
+// config.js -- Default Configuration and App Database
+// ===========================================================
+// Central configuration file containing all default settings for WebIn:
+//   - Fallback icon SVG for apps whose favicons fail to load.
+//   - Default tab categories (AI Tools, LLM, Coding, Hosting, etc.).
+//   - Default app entries for each category with names, URLs, and icons.
+//
+// This data is used on first install or after a reset. Once the user
+// customizes their categories and apps, the data is saved to
+// chrome.storage.local and this config is no longer referenced.
+// ----------------------------------------------------------------------------
+
 const WEBIN_CONFIG = {
   FALLBACK_ICON_SVG:
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzU0NmU3YSI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTggMTBjMCAxLjEtLjIgMi4xMi0uNTcgMy4wN0wxNC4yNSAxMS45bDIuODIgMi44Mi4wNy4wN2MyLjE4LTIuNC43OC02LjA0LTEuNzQtNy41NVM5LjI5IDQuNDYgNi44OSA2LjY0bC4wOC4wNyAyLjgyIDIuODFMMi45MyAxNC40M0E4LjkzMiA4LjkzMiAwIDAgMSAyIDEyYzAtNC40MiAzLjU4LTggOC04czggMy41OCA4IDh6Ii8+PC9zdmc+",
@@ -6,6 +30,7 @@ const WEBIN_CONFIG = {
     "AI Tools",
     "LLM",
     "Coding",
+    "Hosting",
     "OpenSource",
     "Social",
     "Shopping",
@@ -49,6 +74,26 @@ const WEBIN_CONFIG = {
       {
         name: "LeetCode",
         url: "https://leetcode.com",
+      },
+      {
+        name: "HackerRank",
+        url: "https://www.hackerrank.com",
+      },
+      {
+        name: "Codeforces",
+        url: "https://codeforces.com",
+      },
+    ],
+    Hosting: [
+      {
+        name: "Vercel",
+        url: "https://vercel.com",
+        icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico",
+      },
+      {
+        name: "Render",
+        url: "https://render.com",
+        icon: "https://render.com/favicon.ico",
       },
     ],
     OpenSource: [

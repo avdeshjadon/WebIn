@@ -1,3 +1,26 @@
+// ----------------------------------------------------------------------------
+// WebIn -- Floating Overlay for Instant Access to Web Applications
+// ----------------------------------------------------------------------------
+// Author   : Avdesh Jadon
+// GitHub   : https://github.com/avdeshjadon
+// License  : MIT License -- free to use, modify, and distribute.
+//            See LICENSE file in the project root for full license text.
+// ----------------------------------------------------------------------------
+// If this project helped you, consider starring the repository, opening a
+// pull request, or reporting issues on GitHub. Contributions are welcome.
+// ----------------------------------------------------------------------------
+//
+// styles.js -- Core Stylesheet (Part 1 of 3)
+// ===========================================================
+// Contains the primary CSS rules for the WebIn overlay UI, injected into
+// the Shadow DOM to avoid conflicts with host page styles. Includes:
+//   - Base reset and IBM Plex Mono font import.
+//   - Wrapper, header, and close button styling.
+//   - Navigation tabs with horizontal scrolling.
+//   - Search bar and action button styles.
+//   - Card image, modal input, and animation keyframes.
+// ----------------------------------------------------------------------------
+
 const WEBIN_STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -6,6 +29,8 @@ const WEBIN_STYLES = `
   margin: 0 !important;
   padding: 0 !important;
   font-family: 'IBM Plex Mono', 'Consolas', monospace !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 .wrapper {
@@ -21,6 +46,8 @@ const WEBIN_STYLES = `
   flex-direction: column !important;
   overflow: hidden !important;
   border: 2px solid #000 !important;
+  will-change: transform !important;
+  transform: translateZ(0) !important;
 }
 
 .header {
@@ -60,7 +87,7 @@ const WEBIN_STYLES = `
   align-items: center !important;
   justify-content: center !important;
   border-radius: 0 !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
   line-height: 1 !important;
 }
 
@@ -94,6 +121,7 @@ const WEBIN_STYLES = `
   flex-wrap: nowrap !important;
   padding-bottom: 8px !important;
   margin-bottom: -8px !important;
+  scroll-behavior: smooth !important;
 }
 
 .nav-tabs::-webkit-scrollbar {
@@ -119,7 +147,7 @@ const WEBIN_STYLES = `
   background: #fff !important;
   color: #666 !important;
   box-shadow: 2px 2px 0px #888 !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
   flex-shrink: 0 !important;
   text-transform: uppercase !important;
 }
@@ -159,7 +187,7 @@ const WEBIN_STYLES = `
   border: 1px solid #000 !important;
   font-size: 13px !important;
   outline: none !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
   background-color: #fff !important;
   color: #333 !important;
   font-family: 'IBM Plex Mono', monospace !important;
@@ -187,7 +215,7 @@ const WEBIN_STYLES = `
   border-radius: 0 !important;
   flex-shrink: 0;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 2px 2px 0px #888 !important;
 }
 
@@ -219,24 +247,24 @@ const WEBIN_STYLES = `
 }
 
 @keyframes fadeIn {
-  from {
+  0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px) translateZ(0);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
   }
 }
 
 @keyframes modal-scale-in {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.92) translateZ(0);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateZ(0);
   }
 }
 `;

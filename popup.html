@@ -1,0 +1,45 @@
+<!--
+  ============================================================================
+  WebIn - Floating Overlay for Instant Access to Web Applications
+  ============================================================================
+  Author   : Avdesh Jadon
+  GitHub   : https://github.com/avdeshjadon
+  License  : MIT License - free to use, modify, and distribute.
+             See LICENSE file in the project root for full license text.
+  ============================================================================
+  If this project helped you, consider starring the repository, opening a
+  pull request, or reporting issues on GitHub. Contributions are welcome.
+  ============================================================================
+
+  popup.html - Standalone Popup Window Page
+  ===========================================================
+  HTML entry point for the WebIn popup window, used as a fallback when the
+  overlay is launched on restricted pages (chrome://, edge://, about:, etc.)
+  where content script injection is not possible. Loads all WebIn modules
+  and popup-inject.js to render the full UI inside a standalone browser window.
+  ============================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebIn</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 100vw; height: 100vh; overflow: hidden; background: #f5f5dc; }
+  </style>
+</head>
+<body>
+  <script src="webin/config.js"></script>
+  <script src="webin/state.js"></script>
+  <script src="webin/styles.js"></script>
+  <script src="webin/styles2.js"></script>
+  <script src="webin/styles3.js"></script>
+  <script src="webin/modals.js"></script>
+  <script src="webin/ui.js"></script>
+  <script src="webin/tabs.js"></script>
+  <script src="webin/events.js"></script>
+  <script src="webin/popup-inject.js"></script>
+</body>
+</html>

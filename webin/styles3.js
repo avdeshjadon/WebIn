@@ -1,3 +1,26 @@
+// ----------------------------------------------------------------------------
+// WebIn -- Floating Overlay for Instant Access to Web Applications
+// ----------------------------------------------------------------------------
+// Author   : Avdesh Jadon
+// GitHub   : https://github.com/avdeshjadon
+// License  : MIT License -- free to use, modify, and distribute.
+//            See LICENSE file in the project root for full license text.
+// ----------------------------------------------------------------------------
+// If this project helped you, consider starring the repository, opening a
+// pull request, or reporting issues on GitHub. Contributions are welcome.
+// ----------------------------------------------------------------------------
+//
+// styles3.js -- Modal and Card Menu Stylesheet (Part 3 of 3)
+// ===========================================================
+// Final part of the WebIn CSS rules. Contains styles for:
+//   - Modal title, message, footer, and button variants (primary, secondary, danger).
+//   - Card context menu (three-dot edit button with hover reveal).
+//   - Modal form group labels and input focus states.
+//   - Add-card dashed border style with rotate animation.
+//   - Resizer handle for SE corner drag-to-resize.
+//   - Custom scrollbar styling for the content area.
+// ----------------------------------------------------------------------------
+
 const WEBIN_STYLES_PART3 = `
 .modal-title {
   font-size: 16px !important;
@@ -30,7 +53,7 @@ const WEBIN_STYLES_PART3 = `
   border: 1px solid #000 !important;
   font-weight: 600 !important;
   cursor: pointer !important;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   line-height: 1.4 !important;
   text-transform: uppercase !important;
   font-size: 11px !important;
@@ -73,7 +96,7 @@ const WEBIN_STYLES_PART3 = `
   align-items: center !important;
   justify-content: center !important;
   opacity: 0 !important;
-  transition: opacity 0.2s ease, background 0.2s ease !important;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
   z-index: 5 !important;
 }
 
@@ -124,14 +147,14 @@ const WEBIN_STYLES_PART3 = `
   border: 2px dashed #8b4513 !important;
   background: #fff !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   box-shadow: none !important;
 }
 
 .add-card:hover {
   background: #e8e8c8 !important;
   border-color: #000 !important;
-  transform: translateY(-3px) !important;
+  transform: translateY(-4px) translateZ(0) !important;
   box-shadow: 3px 3px 0px #8b4513 !important;
 }
 
@@ -139,7 +162,7 @@ const WEBIN_STYLES_PART3 = `
   width: 40px !important;
   height: 40px !important;
   fill: #8b4513 !important;
-  transition: transform 0.2s ease !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
 .add-card:hover svg {
