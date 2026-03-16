@@ -45,9 +45,11 @@ const WebInEvents = {
 
         if (query) {
           // Search through all categories to find the first matching app
-          for (const [category, items] of Object.entries(WebInState.tabContent)) {
+          for (const [category, items] of Object.entries(
+            WebInState.tabContent,
+          )) {
             const match = items.find((item) =>
-              item.name.toLowerCase().includes(query)
+              item.name.toLowerCase().includes(query),
             );
             if (match) {
               window.open(match.url, "_blank");
@@ -162,7 +164,7 @@ WebInUI.showEditModal = function (item, categoryName) {
     (updatedApp) => {
       const categoryItems = WebInState.tabContent[categoryName];
       const itemToUpdate = categoryItems.find(
-        (i) => i.name === item.name && i.url === item.url
+        (i) => i.name === item.name && i.url === item.url,
       );
       if (itemToUpdate) {
         Object.assign(itemToUpdate, updatedApp);
@@ -175,7 +177,7 @@ WebInUI.showEditModal = function (item, categoryName) {
     () => {
       const categoryItems = WebInState.tabContent[categoryName];
       const itemIndex = categoryItems.findIndex(
-        (i) => i.name === item.name && i.url === item.url
+        (i) => i.name === item.name && i.url === item.url,
       );
       if (itemIndex > -1) {
         categoryItems.splice(itemIndex, 1);
@@ -184,6 +186,6 @@ WebInUI.showEditModal = function (item, categoryName) {
           ? this.renderSearchResults(this.searchInput.value)
           : this.renderContent();
       }
-    }
+    },
   );
 };

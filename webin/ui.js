@@ -71,24 +71,26 @@ const WebInUI = {
 
     // Get icon URL
     const iconUrl = WebInState.getFaviconUrl(item.url, item.icon);
-    
+
     // Try to load icon via background script to bypass CSP
-    WebInState.fetchIconViaBackground(iconUrl).then(dataUrl => {
-      if (dataUrl) {
-        img.src = dataUrl;
-      } else {
-        // Fallback: try direct load (works on sites without strict CSP)
+    WebInState.fetchIconViaBackground(iconUrl)
+      .then((dataUrl) => {
+        if (dataUrl) {
+          img.src = dataUrl;
+        } else {
+          // Fallback: try direct load (works on sites without strict CSP)
+          img.src = iconUrl;
+          img.onerror = () => {
+            img.src = WEBIN_CONFIG.FALLBACK_ICON_SVG;
+          };
+        }
+      })
+      .catch(() => {
         img.src = iconUrl;
         img.onerror = () => {
           img.src = WEBIN_CONFIG.FALLBACK_ICON_SVG;
         };
-      }
-    }).catch(() => {
-      img.src = iconUrl;
-      img.onerror = () => {
-        img.src = WEBIN_CONFIG.FALLBACK_ICON_SVG;
-      };
-    });
+      });
 
     return card;
   },
@@ -105,7 +107,7 @@ const WebInUI = {
 
     const items = WebInState.tabContent[this.currentTab] || [];
     const filteredItems = items.filter((item) =>
-      item.name.toLowerCase().includes(filter.toLowerCase())
+      item.name.toLowerCase().includes(filter.toLowerCase()),
     );
 
     if (isSearching && filteredItems.length === 0) {
@@ -142,7 +144,7 @@ const WebInUI = {
 
     Object.entries(WebInState.tabContent).forEach(([category, items]) => {
       const filteredItems = items.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
+        item.name.toLowerCase().includes(query.toLowerCase()),
       );
 
       if (filteredItems.length > 0) {
@@ -155,7 +157,7 @@ const WebInUI = {
         const grid = document.createElement("div");
         grid.className = "category-grid";
         filteredItems.forEach((item, index) =>
-          grid.appendChild(this.createCard(item, category, index))
+          grid.appendChild(this.createCard(item, category, index)),
         );
         this.content.appendChild(grid);
       }
