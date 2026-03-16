@@ -195,10 +195,11 @@
     document.body.appendChild(host);
 
     // Stop keyboard events from leaking to the page behind the overlay
+    // Use bubble phase (not capture) so events fire normally inside Shadow DOM first
     ["keydown", "keyup", "keypress"].forEach((eventType) => {
       host.addEventListener(eventType, (e) => {
         e.stopPropagation();
-      }, true);
+      });
     });
 
     WebInUI.setActiveTab(
