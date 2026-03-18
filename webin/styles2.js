@@ -63,7 +63,7 @@ const WEBIN_STYLES_PART2 = `
   padding: 14px 8px !important;
   text-align: center !important;
   box-shadow: 3px 3px 0px #888 !important;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
   cursor: pointer !important;
   height: 120px !important;
   display: flex !important;
@@ -175,7 +175,7 @@ const WEBIN_STYLES_PART2 = `
   max-width: 400px !important;
   text-align: left !important;
   transform: scale(0.92) translateZ(0);
-  animation: modal-scale-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: modal-scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: transform, opacity;
 }
 `;

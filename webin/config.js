@@ -28,15 +28,14 @@ const WEBIN_CONFIG = {
 
   DEFAULT_TABS: [
     "AI Tools",
-    "LLM",
+    "LLMs",
     "Coding",
+    "Databases",
     "Hosting",
-    "OpenSource",
+    "Open Source",
+    "Whiteboard",
     "Social",
     "Shopping",
-    "DataBase",
-    "Model Hubs",
-    "Whiteboard",
   ],
 
   DEFAULT_TAB_CONTENT: {
@@ -64,16 +63,21 @@ const WEBIN_CONFIG = {
         icon: "https://img.icons8.com/?size=512&id=USGXKHXKl9X7&format=png",
       },
     ],
-    LLM: [
+    "LLMs": [
       {
         name: "Ollama",
         url: "https://ollama.com",
       },
     ],
-    Coding: [
+    "Coding": [
       {
         name: "LeetCode",
         url: "https://leetcode.com",
+      },
+      {
+        name: "GeeksforGeeks",
+        url: "https://www.geeksforgeeks.org",
+        icon: "https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_favicon.png",
       },
       {
         name: "HackerRank",
@@ -84,19 +88,36 @@ const WEBIN_CONFIG = {
         url: "https://codeforces.com",
       },
     ],
-    Hosting: [
+    "Databases": [
+      {
+        name: "Firebase",
+        url: "https://console.firebase.google.com/u/0/",
+        icon: "https://vectorseek.com/wp-content/uploads/2025/05/Firebase-icon-Logo-PNG-SVG-Vector.png",
+      },
+      {
+        name: "MongoDB",
+        url: "https://cloud.mongodb.com",
+        icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwRUQ2NCI+PHBhdGggZD0iTTEyIDEuMjdjLTIuMiA0LjQtMy4zIDYuNi0zLjMgMTAuNzMgMCA0LjEzIDEuMSA2LjMzIDMuMyAxMC43MyAyLjItNC40IDMuMy02LjYgMy4zLTEwLjczIDAtNC4xMy0xLjEtNi4zMy0zLjMtMTAuNzN6bS0uNSA0djE1aC0uMXYtMTVoLjF6Ii8+PC9zdmc+",
+      },
+      {
+        name: "Supabase",
+        url: "https://supabase.com/dashboard",
+        icon: "https://img.icons8.com/?size=512&id=grZaE9tjqDyr&format=png",
+      },
+    ],
+    "Hosting": [
       {
         name: "Vercel",
         url: "https://vercel.com",
         icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico",
       },
       {
-        name: "Render",
-        url: "https://render.com",
-        icon: "https://render.com/favicon.ico",
+        name: "Cloudflare",
+        url: "https://dash.cloudflare.com",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/9/94/Cloudflare_Logo.png",
       },
     ],
-    OpenSource: [
+    "Open Source": [
       {
         name: "GitHub",
         url: "https://github.com",
@@ -110,7 +131,14 @@ const WEBIN_CONFIG = {
         url: "https://sourceforge.net",
       },
     ],
-    Social: [
+    "Whiteboard": [
+      {
+        name: "Excalidraw",
+        url: "https://excalidraw.com/",
+        icon: "https://excalidraw.com/favicon.ico"
+      }
+    ],
+    "Social": [
       {
         name: "YouTube",
         url: "https://youtube.com",
@@ -140,7 +168,7 @@ const WEBIN_CONFIG = {
         url: "https://reddit.com",
       },
     ],
-    Shopping: [
+    "Shopping": [
       {
         name: "Amazon",
         url: "https://amazon.com",
@@ -161,50 +189,6 @@ const WEBIN_CONFIG = {
         name: "Blinkit",
         url: "https://blinkit.com",
       },
-    ],
-    DataBase: [
-      {
-        name: "Firebase",
-        url: "https://console.firebase.google.com/u/0/",
-        icon: "https://vectorseek.com/wp-content/uploads/2025/05/Firebase-icon-Logo-PNG-SVG-Vector.png",
-      },
-      {
-        name: "MongoDB",
-        url: "https://cloud.mongodb.com",
-        icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwRUQ2NCI+PHBhdGggZD0iTTEyIDEuMjdjLTIuMiA0LjQtMy4zIDYuNi0zLjMgMTAuNzMgMCA0LjEzIDEuMSA2LjMzIDMuMyAxMC43MyAyLjItNC40IDMuMy02LjYgMy4zLTEwLjczIDAtNC4xMy0xLjEtNi4zMy0zLjMtMTAuNzN6bS0uNSA0djE1aC0uMXYtMTVoLjF6Ii8+PC9zdmc+",
-      },
-      {
-        name: "Supabase",
-        url: "https://supabase.com/dashboard",
-        icon: "https://img.icons8.com/?size=512&id=grZaE9tjqDyr&format=png",
-      },
-      {
-        name: "PostgreSQL",
-        url: "https://www.postgresql.org",
-        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1080px-Postgresql_elephant.svg.png",
-      },
-      {
-        name: "PlanetScale",
-        url: "https://planetscale.com",
-        icon: "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/2/planetscale-x0ysfb6g0dedpas15vtc7.png/planetscale-30oedqelebdxwjr0iw40qi.png",
-      },
-    ],
-    "Model Hubs": [
-      {
-        name: "CivitAI",
-        url: "https://civitai.com",
-      },
-      {
-        name: "Hugging Face",
-        url: "https://huggingface.co",
-      },
-    ],
-    "Whiteboard": [
-      {
-        name: "Excalidraw",
-        url: "https://excalidraw.com/",
-        icon: "https://excalidraw.com/favicon.ico"
-      }
     ],
   },
 };

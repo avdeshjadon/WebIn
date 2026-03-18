@@ -162,7 +162,7 @@ const WEBIN_STYLES_PART3 = `
   width: 40px !important;
   height: 40px !important;
   fill: #8b4513 !important;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .add-card:hover svg {
