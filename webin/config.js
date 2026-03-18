@@ -84,8 +84,9 @@ const WEBIN_CONFIG = {
         url: "https://www.hackerrank.com",
       },
       {
-        name: "Codeforces",
-        url: "https://codeforces.com",
+        name: "CodingNinjas Code Studio",
+        url: "https://www.codingninjas.com/studio",
+        icon: "https://www.codingninjas.com/favicon.ico",
       },
     ],
     "Databases": [
