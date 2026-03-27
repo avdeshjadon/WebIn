@@ -137,6 +137,11 @@ const WEBIN_CONFIG = {
         name: "Excalidraw",
         url: "https://excalidraw.com/",
         icon: "https://excalidraw.com/favicon.ico"
+      },
+      {
+        name: "Eraser.io",
+        url: "https://eraser.io",
+        icon: "https://app.eraser.io/favicon.ico"
       }
     ],
     "Social": [
