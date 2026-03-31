@@ -36,6 +36,7 @@ const WEBIN_CONFIG = {
     "Whiteboard",
     "Social",
     "Shopping",
+    "Miscellaneous",
   ],
 
   DEFAULT_TAB_CONTENT: {
@@ -70,6 +71,10 @@ const WEBIN_CONFIG = {
       },
     ],
     "Coding": [
+      {
+        name: "TakeUForward",
+        url: "https://takeuforward.org/",
+      },
       {
         name: "LeetCode",
         url: "https://leetcode.com",
@@ -107,6 +112,14 @@ const WEBIN_CONFIG = {
       },
     ],
     "Hosting": [
+      {
+        name: "Azure Portal",
+        url: "https://portal.azure.com/?Microsoft_Azure_Education_correlationId=ba7ace37-16b7-4aa5-bf58-d3e286de0aa5&Microsoft_Azure_Education_newA4E=true&Microsoft_Azure_Education_asoSubGuid=e893fc9a-852b-4959-96ec-7ed71973ac8a&feature.tokencaching=true&feature.internalgraphapiversion=true#@lpu.in/resource/subscriptions/e893fc9a-852b-4959-96ec-7ed71973ac8a/resourceGroups/openclaw_group/providers/Microsoft.Compute/virtualMachines/openclaw/networkSettings",
+      },
+      {
+        name: "Web3Forms",
+        url: "https://app.web3forms.com/",
+      },
       {
         name: "Vercel",
         url: "https://vercel.com",
@@ -194,6 +207,12 @@ const WEBIN_CONFIG = {
       {
         name: "Blinkit",
         url: "https://blinkit.com",
+      },
+    ],
+    "Miscellaneous": [
+      {
+        name: "NetMirror",
+        url: "https://netmirror.gg/2/en",
       },
     ],
   },
