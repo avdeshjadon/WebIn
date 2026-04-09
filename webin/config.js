@@ -93,6 +93,26 @@ const WEBIN_CONFIG = {
         url: "https://www.codingninjas.com/studio",
         icon: "https://www.codingninjas.com/favicon.ico",
       },
+      {
+        name: "Codolio",
+        url: "https://codolio.com/dashboard",
+        icon: "https://codolio.com/favicon.ico",
+      },
+      {
+        name: "CodeHelp",
+        url: "https://www.codehelp.in/",
+        icon: "https://www.codehelp.in/favicon.ico",
+      },
+      {
+        name: "CodeChef",
+        url: "https://www.codechef.com",
+        icon: "https://www.codechef.com/favicon.ico",
+      },
+      {
+        name: "Codeforces",
+        url: "https://codeforces.com",
+        icon: "https://codeforces.com/favicon.ico",
+      },
     ],
     "Databases": [
       {
