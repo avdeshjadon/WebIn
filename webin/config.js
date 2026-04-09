@@ -64,13 +64,18 @@ const WEBIN_CONFIG = {
         icon: "https://img.icons8.com/?size=512&id=USGXKHXKl9X7&format=png",
       },
     ],
-    "LLMs": [
+    LLMs: [
       {
         name: "Ollama",
         url: "https://ollama.com",
       },
     ],
-    "Coding": [
+    Coding: [
+      {
+        name: "Codolio",
+        url: "https://codolio.com/dashboard",
+        icon: "https://codolio.com/favicon.ico",
+      },
       {
         name: "TakeUForward",
         url: "https://takeuforward.org/",
@@ -80,23 +85,18 @@ const WEBIN_CONFIG = {
         url: "https://leetcode.com",
       },
       {
+        name: "HackerRank",
+        url: "https://www.hackerrank.com",
+      },
+      {
         name: "GeeksforGeeks",
         url: "https://www.geeksforgeeks.org",
         icon: "https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_favicon.png",
       },
       {
-        name: "HackerRank",
-        url: "https://www.hackerrank.com",
-      },
-      {
-        name: "CodingNinjas Code Studio",
+        name: "Code Studio",
         url: "https://www.codingninjas.com/studio",
         icon: "https://www.codingninjas.com/favicon.ico",
-      },
-      {
-        name: "Codolio",
-        url: "https://codolio.com/dashboard",
-        icon: "https://codolio.com/favicon.ico",
       },
       {
         name: "CodeHelp",
@@ -114,7 +114,7 @@ const WEBIN_CONFIG = {
         icon: "https://codeforces.com/favicon.ico",
       },
     ],
-    "Databases": [
+    Databases: [
       {
         name: "Firebase",
         url: "https://console.firebase.google.com/u/0/",
@@ -131,7 +131,7 @@ const WEBIN_CONFIG = {
         icon: "https://img.icons8.com/?size=512&id=grZaE9tjqDyr&format=png",
       },
     ],
-    "Hosting": [
+    Hosting: [
       {
         name: "Azure Portal",
         url: "https://portal.azure.com/?Microsoft_Azure_Education_correlationId=ba7ace37-16b7-4aa5-bf58-d3e286de0aa5&Microsoft_Azure_Education_newA4E=true&Microsoft_Azure_Education_asoSubGuid=e893fc9a-852b-4959-96ec-7ed71973ac8a&feature.tokencaching=true&feature.internalgraphapiversion=true#@lpu.in/resource/subscriptions/e893fc9a-852b-4959-96ec-7ed71973ac8a/resourceGroups/openclaw_group/providers/Microsoft.Compute/virtualMachines/openclaw/networkSettings",
@@ -165,19 +165,19 @@ const WEBIN_CONFIG = {
         url: "https://sourceforge.net",
       },
     ],
-    "Whiteboard": [
+    Whiteboard: [
       {
         name: "Excalidraw",
         url: "https://excalidraw.com/",
-        icon: "https://excalidraw.com/favicon.ico"
+        icon: "https://excalidraw.com/favicon.ico",
       },
       {
         name: "Eraser.io",
         url: "https://eraser.io",
-        icon: "https://app.eraser.io/favicon.ico"
-      }
+        icon: "https://app.eraser.io/favicon.ico",
+      },
     ],
-    "Social": [
+    Social: [
       {
         name: "YouTube",
         url: "https://youtube.com",
@@ -207,7 +207,7 @@ const WEBIN_CONFIG = {
         url: "https://reddit.com",
       },
     ],
-    "Shopping": [
+    Shopping: [
       {
         name: "Amazon",
         url: "https://amazon.com",
@@ -229,7 +229,7 @@ const WEBIN_CONFIG = {
         url: "https://blinkit.com",
       },
     ],
-    "Miscellaneous": [
+    Miscellaneous: [
       {
         name: "NetMirror",
         url: "https://netmirror.gg/2/en",
