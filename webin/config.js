@@ -133,8 +133,8 @@ const WEBIN_CONFIG = {
     ],
     Hosting: [
       {
-        name: "Azure Portal",
-        url: "https://portal.azure.com/?Microsoft_Azure_Education_correlationId=ba7ace37-16b7-4aa5-bf58-d3e286de0aa5&Microsoft_Azure_Education_newA4E=true&Microsoft_Azure_Education_asoSubGuid=e893fc9a-852b-4959-96ec-7ed71973ac8a&feature.tokencaching=true&feature.internalgraphapiversion=true#@lpu.in/resource/subscriptions/e893fc9a-852b-4959-96ec-7ed71973ac8a/resourceGroups/openclaw_group/providers/Microsoft.Compute/virtualMachines/openclaw/networkSettings",
+        name: "AWS Console",
+        url: "https://aws.amazon.com/console/",
       },
       {
         name: "Web3Forms",
