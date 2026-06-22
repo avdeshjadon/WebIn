@@ -32,6 +32,7 @@ const WEBIN_CONFIG = {
     "Coding",
     "Databases",
     "Hosting",
+    "Cron Jobs",
     "Open Source",
     "Whiteboard",
     "Social",
@@ -146,6 +147,10 @@ const WEBIN_CONFIG = {
         icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico",
       },
       {
+        name: "Render",
+        url: "https://dashboard.render.com",
+      },
+      {
         name: "Cloudflare",
         url: "https://dash.cloudflare.com",
         icon: "https://upload.wikimedia.org/wikipedia/commons/9/94/Cloudflare_Logo.png",
@@ -227,6 +232,12 @@ const WEBIN_CONFIG = {
       {
         name: "Blinkit",
         url: "https://blinkit.com",
+      },
+    ],
+    "Cron Jobs": [
+      {
+        name: "Cron-Job.org",
+        url: "https://console.cron-job.org/dashboard",
       },
     ],
     Miscellaneous: [
