@@ -131,6 +131,10 @@ const WEBIN_CONFIG = {
         url: "https://supabase.com/dashboard",
         icon: "https://img.icons8.com/?size=512&id=grZaE9tjqDyr&format=png",
       },
+      {
+        name: "Aiven",
+        url: "https://console.aiven.io/",
+      },
     ],
     Hosting: [
       {
