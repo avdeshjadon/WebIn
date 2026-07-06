@@ -135,6 +135,10 @@ const WEBIN_CONFIG = {
         name: "Aiven",
         url: "https://console.aiven.io/",
       },
+      {
+        name: "Cloudinary",
+        url: "https://cloudinary.com/console",
+      },
     ],
     Hosting: [
       {
